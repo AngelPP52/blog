@@ -1,10 +1,10 @@
 # 背景
 
-最近团队在建设使用 Chrome 插件的方式实现点选页面元素的工具，于是开始了一段 Chrome 插件开发的探索之旅。
+最近团队在建设可视化埋点平台，我们需要使用 Chrome 插件的技术实现点选页面元素的功能，于是开始探索 Chrome 插件开发的相关技术。
 
-另一方面，为了补全前端技能树，学习开发 Chrome 插件是其中一个很重要的技能之一。
+另一方面，为了补全前端技能树，学习开发 Chrome 插件是其中一个非常重要的分支。
 
-此文会总结常用 API 的用法，并且使用 [Demo]() 来帮助讲述如何帮助大家快速开始 Chrome 插件开发。
+此文会总结常用 API 的用法，并且使用例子来帮助讲述如何帮助大家快速开始 Chrome 插件开发。
 
 # 前言
 
@@ -12,11 +12,13 @@
 
 > 官网解释：
 >
-> [What are extensions?](https://developer.chrome.com/docs/extensions/mv2/overview/)
+> [What are extensions](https://developer.chrome.com/docs/extensions/mv2/overview/)
 
-Chrome 插件基于 Web 技术，只要懂 `JS/CSS/HTML` 即可，在单独的沙盒执行环境中运行，可以直接与 Chrome 浏览器进行交互，如修改网络请求、操作选项卡、读取 Cookies 等等。
+Chrome 插件基于 Web 技术，只要懂 `JS/CSS/HTML` 即可开始开发。
 
-通过使用 Chrome 自行定制用户需要的功能，包括但不限于：
+Chrome 插件在单独的沙盒执行环境中运行，可以直接与 Chrome 浏览器进行交互，例如：修改网络请求、操作选项卡、读取 Cookies 等等。
+
+通过使用 Chrome 插件技术定制用户需要的功能，包括但不限于：
 
 - 提高生产力的工具
 - 丰富网页的功能
@@ -28,46 +30,7 @@ Chrome 插件基于 Web 技术，只要懂 `JS/CSS/HTML` 即可，在单独的�
 - [插件 Demo](https://github.com/GoogleChrome/chrome-extensions-samples)
 - [插件 API](https://developer.chrome.com/docs/extensions/reference/)
 
-## 开发与调试
-
-> 官网链接：
->
-> [Getting started](https://developer.chrome.com/docs/extensions/mv2/getstarted/)
->
-> [Debugging extensions](https://developer.chrome.com/docs/extensions/mv2/tut_debugging/)
-
-### 开发前准备
-
-1. 通过导航打开扩展管理页面：`chrome://extensions`
-   - 也可以通过单击 Chrome 菜单，将鼠标悬停在 “**更多工具**” 上，然后选择 ”**扩展程序**” 来打开 “**扩展管理**” 页面。
-2. 通过单击 **开发者模式** 旁边的切换开关启用。
-3. 单击 **加载已解压的扩展程序** 按钮并选择扩展目录。
-
-4. 如果修改了本地的代码，通过点击 **刷新** 图标按钮，重新加载插件。
-
-<img src="/Users/guohualiang/Desktop/md/blog/chrome/open-chrome-extensions.png" alt="start a chrome etension" style="zoom: 50%;" />
-
-### 创建项目
-
-
-
-### 调试 Content scripts
-
-可以在 `source > Content scripts` 中找到插件的所有的 `Content scripts`，任意添加断点进行调试 `JS`。
-
-![debug content scripts](/Users/guohualiang/Desktop/md/blog/chrome/debug-conten-script.png)
-
-### 调试 Background
-
-可以在插件界面，找到 **background.html** 的链接，点击便可打开背景页的调试控制台。
-
-![debug backgound](/Users/guohualiang/Desktop/md/blog/chrome/debug-backgound.png)
-
-### 调试 Popup.js
-
-Popup 与普通的 Web 调试类似，可以在右击 **工具栏插件图标** 后，在展开的内容上选择 **审查弹出内容**，即可打开 **Popup 页面** 的调试控制台。
-
-![debug popup.js](/Users/guohualiang/Desktop/md/blog/chrome/debug-popup.png)
+到 [开发与调试](#开发与调试) 部分将会介绍完整插件开发和调试的流程。
 
 # 正文
 
@@ -241,7 +204,7 @@ chrome.runtime.onSuspend.addListener(function() {
 
 > 官网链接：
 >
-> [content_scripts](https://developer.chrome.com/docs/extensions/mv2/content_scripts/)
+> [content scripts](https://developer.chrome.com/docs/extensions/mv2/content_scripts/)
 
 在当前页面上下文运行的脚本，可以直接操作 DOM 对象，而不会与页面脚本发生冲突。
 
@@ -255,6 +218,8 @@ content_scripts 可以直接调用的 Chrome API：
 其他的 API 都无法直接调用，需要通过 **消息通信** 的发方式，让插件程序把结果通过消息的方式返回。
 
 #### 静态注入
+
+静态注入指，使用 manifest.json 配置文件字段的方式定义的 content scripts。
 
 ```json
 {
@@ -289,8 +254,8 @@ content_scripts 可以直接调用的 Chrome API：
   - `document_end`，表示在 DOM 构建完成后，img、frame 加载前。
 
 - `all_frames`: 可选。
-  - true 表示内容脚本会被注入到当前选项卡的所有 frames（同时需要满足 URL 要求）。
-  - false 则只会注入到顶层 frame。
+  - `true` 表示内容脚本会被注入到当前选项卡的所有 frames（同时需要满足 URL 要求）。
+  - `false` 则只会注入到顶层 frame。
 
 #### 动态注入
 
@@ -310,7 +275,7 @@ content_scripts 可以直接调用的 Chrome API：
 
 ![image-20210818150207925](/Users/guohualiang/Desktop/md/blog/chrome/exexecuteScript-error.png)
 
-动态注入脚本代码、脚本文件:
+动态注入脚本代码、脚本文件的示例代码:
 
 ```js
 chrome.runtime.onMessage.addListener(
@@ -350,9 +315,7 @@ chrome.runtime.onMessage.addListener(
 
 ![devtools-page](/Users/guohualiang/Desktop/md/blog/chrome/devtools-page.png)
 
-
-
-#### 定制开发者面板
+定制开发者面板有关代码：
 
 ![devtools-panel-sidebar](/Users/guohualiang/Desktop/md/blog/chrome/devtools-panel-sidebar.png)
 
@@ -449,15 +412,178 @@ manifest.json
 
 2、通过指定 `update_url` 字段，随浏览器的自动检查更新机制（每个几个小时），拉取 `xml` 清单，决定是否更新最新版本。
 
+很遗憾的是，我没有在本地调试成功，根据网上的说法，Chrome 更新机制不认本地文件服务（与端口号非80有关），感兴趣可以自行探索一下。
+
 ## 主要 API 介绍
 
 ### chrome.action、chrome.pageAction、chrome.browserAction
 
+这三个 API 均与插件在浏览器地址栏右侧的 icon 有关，但并不是完全一样的东西。
+
+三者的关系可以使用官网的一个说法：
+
+> The chrome.action API replaced the [browserAction](https://developer.chrome.com/docs/extensions/reference/browserAction/) and [pageAction](https://developer.chrome.com/docs/extensions/reference/pageAction/) APIs in Manifest V3. By default, actions are similar to browser actions, but it is possible to emulate the behavior of a page action using the action API.
+>
+> 在 Manifest V3 中，使用 chrome.action 代替 V2 中的其他两个 API。 `chrome.action` 更像是 `chrome.browserAction`，同时，可以使用 `chrome.action` 模拟 `chrome.browserAction` 中的能力。
+
+`chrome.pageAction` 与 `chrome.browserAction` 的差异在于：
+
+browserAction 以常驻 icon 的形式，在所有的选项卡中，行为都是一样。而 pageAction 则通常用于某些 url/tab 才展示 icon 的场景。
+
+**chrome.browserAction 相关 API**
+
+- **Methods**
+  - `disable` − browserAction.disable(integer tabId)
+  - `enable` − browserAction.enable(integer tabId)
+  - `getBadgeBackgroundColor` − browserAction.getBadgeBackgroundColor(object details, function callback)
+  - `getBadgeText` − browserAction.getBadgeText(object details, function callback)
+  - `getPopup1` − browserAction.getPopup(object details, function callback)
+  - `getTitle1` − browserAction.getTitle(object details, function callback)
+  - `setBadgeBackgroundColor` − browserAction.setBadgeBackgroundColor(object details)
+  - `setBadgeText` − browserAction.setBadgeText(object details)
+  - `setIcon1` − browserAction.setIcon(object details, function callback)
+  - `setPopup1` − browserAction.setPopup(object details)
+  - `setTitle1` − browserAction.setTitle(object details)
+- **Events**
+  - `onClicked1`
+
+**chrome.pageAction 相关 API**
+
+- **Methods**
+  - `getPopup1` − pageAction.getPopup(object details, function callback)
+  - `getTitle1` − pageAction.getTitle(object details, function callback)
+  - `hide` − chrome.pageAction.hide(integer tabId)
+  - `setIcon1` − pageAction.setIcon(object details, function callback)
+  - `setPopup1` − pageAction.setPopup(object details)
+  - `setTitle1` − pageAction.setTitle(object details)
+  - `show` − pageAction.show(integer tabId)
+- **Events**
+  - `onClicked1`
+
 ### chrome.runtime
+
+`chrome.runtime` API 允许用户拿到后台程序页面、manifest 信息、实现消息通信、插件生命周期等，包括但不限于以下能力：
+
+**Message passing （常用）**
+
+实现[消息通信](#消息通信)， 包括 `connect, connectNative, sendMessage, and sendNativeMessage`。
+
+**Accessing extension and platform metadata**
+
+获取 后台页面，manifest 配置，平台参数等，包括 `getBackgroundPage, getManifest, getPackageDirectoryEntry, and getPlatformInfo`。
+
+**Managing extension lifecycle and options**
+
+重新加载插件，执行立即更新检查，控制 option 页面展示等，包括 `reload, requestUpdateCheck, setUninstallURL, and openOptionsPage`。
+
+**Device restart support**
+
+重启插件，但只能在 `Chrome OS` 系统上生效，包括 `restart, restartAfterDelay`。
+
+**Helper utilities**
+
+其他一些工具函数，包括 `getURL`。
+
+**有关 API**
+
+- **Methods**
+  - `connect` - connect(extensionId, connectInfo)
+  - `connectNative` - connectNative(application)
+  - `getBackgroundPage` - getBackgroundPage(callback)
+  - `getManifest` - getManifest()
+  - `getPackageDirectoryEntry` - getPackageDirectoryEntry(callback)
+  - `getPlatformInfo` - getPlatformInfo(callback)
+  - `getURL` - getURL(path)
+  - `openOptionsPage` - openOptionsPage(callback)
+  - `reload` - reload()
+  - `requestUpdateCheck` - requestUpdateCheck(callback)
+  - `restart` - restart()
+  - `restartAfterDelay` - restartAfterDelay(seconds, callback)
+  - `sendMessage` - sendMessage(extensionId, message, options, responseCallback)
+  - `sendNativeMessage` - sendNativeMessage(application, message, responseCallback)
+  - `setUninstallURL` - setUninstallURL(url, callback)
+- **Events**
+  - `onBrowserUpdateAvailable`
+  - `onConnect`
+  - `onConnectExternal`
+  - `onConnectNative`
+  - `onInstalled`
+  - `onMessage`
+  - `onMessageExternal`
+  - `onRestartRequired`
+  - `onStartup`
+  - `onSuspend`
+  - `onSuspendCanceled`
+  - `onUpdateAvailable`
 
 ### chrome.tabs
 
+chrome.tabs API 允许用户新建、编辑、重新排版选项卡，以及获取选项卡信息等。
+
+操作选项卡需要在 manife.json 中申请 tabs 权限："permissions": [ "tabs"  ]。
+
+**有关 API**
+
+- **Methods**
+  - `captureVisibleTab` - captureVisibleTab(windowId, options, callback)
+  - `connect` - connect(tabId, connectInfo, callback)
+  - `create` - create(createProperties, callback)
+  - `detectLanguage` - detectLanguage(tabId, callback)
+  - `discard` - discard(tabId, callback)
+  - `duplicate` - duplicate(tabId, callback)
+  - `executeScript` - executeScript(tabId, details, callback)
+  - `get` - get(tabId, callback)
+  - `getAllInWindow` - getAllInWindow(windowId, callback)
+  - `getCurrent` - getCurrent(callback)
+  - `getSelected` - getSelected(windowId, callback)
+  - `getZoom` - getZoom(tabId, callback)
+  - `getZoomSettings` - getZoomSettings(tabId, callback)
+  - `goBack` - goBack(tabId, callback)
+  - `goForward` - goForward(tabId, callback)
+  - `group` - group(options, callback)
+  - `highlight` - highlight(highlightInfo, callback)
+  - `insertCSS` - insertCSS(tabId, details, callback)
+  - `move` - move(tabIds, moveProperties, callback)
+  - `query` - query(queryInfo, callback)
+  - `reload` - reload(tabId, reloadProperties, callback)
+  - `remove` - remove(tabIds, callback)
+  - `removeCSS` - removeCSS(tabId, details, callback)
+  - `sendMessage` - sendMessage(tabId, message, options, responseCallback)
+  - `sendRequest` - sendRequest(tabId, request, responseCallback)
+  - `setZoom` - setZoom(tabId, zoomFactor, callback)
+  - `setZoomSettings` - setZoomSettings(tabId, zoomSettings, callback)
+  - `ungroup` - ungroup(tabIds, callback)
+  - `update` - update(tabId, updateProperties, callback)
+- **Events**
+  - `onActivated`
+  - `onActiveChanged`
+  - `onAttached`
+  - `onCreated`
+  - `onDetached`
+  - `onHighlightChanged`
+  - `onHighlighted`
+  - `onMoved`
+  - `onRemoved`
+  - `onReplaced`
+  - `onSelectionChanged`
+  - `onUpdated`
+  - `onZoomChange`
+
 ### chrome.contextMenus
+
+一般只在需要右键面板添加一些菜单时使用到这个 API，操作右键菜单面板需要申请权限："permissions": [ "contextMenus" ]。
+
+**有关 API**
+
+- **Methods**
+
+  - `create` - create(createProperties, callback)
+  - `remove` - remove(menuItemId, callback)
+  - `removeAll` - removeAll(callback)
+  - `update` - update(id, updateProperties, callback)
+
+- **Events**
+- `onClicked`
 
 ## 消息通信
 
@@ -492,7 +618,7 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 ```js
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-    console.log(sender.tab ?
+    console.log(sender.tab 
                 "来自内容脚本：" + sender.tab.url :
                 "来自扩展程序");
     if (request.greeting == "您好")
@@ -573,9 +699,352 @@ window.addEventListener("message", function(event) {
 }, false);
 ```
 
-## 参考
+## 开发与调试
 
+> 官网链接：
+>
+> [Getting started](https://developer.chrome.com/docs/extensions/mv2/getstarted/)
+>
+> [Debugging extensions](https://developer.chrome.com/docs/extensions/mv2/tut_debugging/)
+
+### 开发前准备
+
+1. 通过导航打开扩展管理页面：`chrome://extensions`
+   - 也可以通过单击 Chrome 菜单，将鼠标悬停在 “**更多工具**” 上，然后选择 ”**扩展程序**” 来打开 “**扩展管理**” 页面。
+2. 通过单击 **开发者模式** 旁边的切换开关启用。
+3. 单击 **加载已解压的扩展程序** 按钮并选择扩展目录。
+
+4. 如果修改了本地的代码，通过点击 **刷新** 图标按钮，重新加载插件。
+
+<img src="/Users/guohualiang/Desktop/md/blog/chrome/open-chrome-extensions.png" alt="start a chrome etension" style="zoom: 50%;" />
+
+### 创建项目 (React)
+
+Chrome 插件的开发可以直接使用原生 JS，但是由于使用原生来写交互事件着实让人头痛。
+
+于是，本次项目的搭建以 `React + Antd` 作为基本技术选型。
+
+1. 初始化 npm
+
+```bash
+npm init -y
+```
+
+2. 安装依赖
+
+```bash
+# dev 依赖
+npm install --save-dev @babel/core @babel/plugin-proposal-class-properties @babel/preset-env @babel/preset-react babel-loader copy-webpack-plugin clean-webpack-plugin html-loader html-webpack-plugin webpack webpack-cli webpack-dev-server
+# 非 dev 依赖
+npm install react react-dom react-router-dom
+```
+
+3. 添加 `scripts`
+
+```json
+{
+   ...
+  "scripts": {
+    "start": "webpack-dev-server",
+    "build:prod": "webpack --mode=production",
+    "build:watch": "webpack --watch --mode=production"
+  }
+  ...
+}
+```
+
+4. 创建 React 文件
+
+目录结构如下：
+
+```text
+📦src
+ ┣ 📂assets
+ ┃ ┗ 📜eye-dropper-solid.svg
+ ┣ 📂background
+ ┃ ┗ 📜index.ejs
+ ┣ 📂components
+ ┣ 📂epicker-ui
+ ┃ ┣ 📜api.ts
+ ┃ ┣ 📜index.css
+ ┃ ┣ 📜index.ejs
+ ┃ ┗ 📜index.tsx
+ ┣ 📂popup
+ ┃ ┣ 📜index.css
+ ┃ ┣ 📜index.ejs
+ ┃ ┗ 📜index.tsx
+ ┣ 📜declares.d.ts
+ ┣ 📜default.css
+ ┣ 📜manifest.json
+ ┗ 📜request.ts
+```
+
+由于我们需要插入一些第三方的 js 包，所以我们的 HTML 模版采用 ejs 文件来写。
+
+popup.ejs
+
+```ejs
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="popup"></div>
+  <%
+    for (let i=0; i<htmlWebpackPlugin.options.jsScripts.length; i++) {
+  %>
+    <script defer="defer" src="<%= htmlWebpackPlugin.options.jsScripts[i] %>"></script>
+  <% } %>
+</body>
+
+</html>
+```
+
+epicker-ui.js
+
+```ejs
+<!DOCTYPE html>
+<html id="tracker-epicker" lang="en">
+
+<head>
+  <meta charset="utf-8">
+</head>
+
+<body>
+  <div id="epicker-ui"></div>
+  <%
+    for (let i=0; i<htmlWebpackPlugin.options.jsScripts.length; i++) {
+  %>
+  <script defer="defer" src="<%= htmlWebpackPlugin.options.jsScripts[i] %>"></script>
+  <% } %>
+</body>
+
+</html>
+```
+
+background.ejs
+
+```ejs
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+</head>
+
+<body>
+  <%
+  for (let i=0; i<htmlWebpackPlugin.options.jsScripts.length; i++) {
+  %>
+  <script defer="defer" src="<%= htmlWebpackPlugin.options.jsScripts[i] %>"></script>
+  <% } %>
+</body>
+
+</html>
+```
+
+5. 创建 Chrome 插件文件
+
+manifest.json
+
+```json
+{
+  "description": "Tracker Creator for SSC",
+  "manifest_version": 2,
+  "minimum_chrome_version": "55.0",
+  "name": "Tracker Creator 2",
+  "version": "0.0.1",
+
+  "background": {
+    "page": "background.html"
+  },
+  "browser_action": {
+    "default_icon": "img/icon.png",
+    "default_popup": "popup.html",
+    "default_title": "Tracker Creator"
+  },
+  "icons": {
+    "32": "img/icon.png"
+  },
+  "content_scripts": [
+    {
+      "all_frames": true,
+      "js": [
+        "/js/vapi.js",
+        "/js/vapi-client.js",
+        "/js/contentscript.js"
+      ],
+      "match_about_blank": true,
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+
+  "content_security_policy": "script-src 'self'; object-src 'self'",
+
+  "permissions": [
+    "cookies",
+    "storage",
+    "tabs",
+    "unlimitedStorage",
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>"
+  ],
+
+  "web_accessible_resources": [
+    "/web_accessible_resources/*"
+  ]
+}
+```
+
+`content_scripts`: 这里配置了一些上下文脚本。
+
+`permissions`: 需要向浏览器申请的权限。
+
+`web_accessible_resources`: 资源文件，如 `epicker-ui.html`。
+
+6. 配置 `tsconfig.json`
+
+```json
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "jsx": "react",
+    "lib": ["es2015", "dom"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "dist/js",
+    "rootDir": "src",
+    "sourceMap": true,
+    "target": "es5"
+  }
+}
+```
+
+7. 配置 `webpack.config.js`
+
+本次项目开发涉及三个页面：popup.html（参数面板），epicker-ui.html（选择器面板），background.html（后台）。
+
+配置 externals: {vAPI: 'vAPI', cTracker: 'cTracker', chrome: 'chrome',} 以在项目中通过 import 的方式直接使用第三方 API。
+
+同时，记得需要在 declares.d.ts 文件中配置：declare module 'vAPI'; declare module 'cTracker'; declare module 'chrome'; 使不会报 ts 的异常。
+
+```js
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
+module.exports = {
+  devServer: {
+    contentBase: path.resolve(__dirname, './src'),
+    historyApiFallback: true
+  },
+  entry: {
+    popup: path.resolve(__dirname, "./src/popup/index.tsx"),
+    'epicker-ui': path.resolve(__dirname, "./src/epicker-ui/index.tsx"),
+  },
+  output: {
+    filename: '[name].js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  resolve: {
+    mainFields: ['module', 'main', 'browser'],
+    alias: {
+      root: path.resolve(__dirname),
+      '@': path.resolve(__dirname, 'src'),
+    },
+    extensions: ['.js', '.tsx', '.d.ts', '.ts', '.jsx', '.json', '.css'],
+  },
+  externals: {
+    vAPI: 'vAPI',
+    cTracker: 'cTracker',
+    chrome: 'chrome',
+  },
+  optimization: {
+	...
+  },
+  module: {
+   ...
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      filename: 'popup.html',
+      template: 'src/popup/index.ejs',
+      chunks: ['popup'],
+      jsScripts: ["js/vapi.js", "js/vapi-common.js", "js/vapi-client.js"],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'web_accessible_resources/epicker-ui.html',
+      template: 'src/epicker-ui/index.ejs',
+      chunks: ['epicker-ui'],
+      jsScripts: ["../js/vapi.js", "../js/vapi-common.js", "../js/vapi-client.js", "../js/vapi-client-extra.js", "../js/lib/optimal-select.min.js"],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'background.html',
+      template: 'src/background/index.ejs',
+      chunks: ['background'],
+      jsScripts: ["js/webext.js", "js/vapi.js", "js/vapi-common.js", "js/vapi-background.js", "js/background.js", "js/cTracker.js", "js/messaging.js", "js/start.js"],
+      inject: 'body',
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'src/manifest.json', to: '[name][ext]' },
+      ]
+    }),
+    new CleanWebpackPlugin()
+    ...
+  ],
+  performance: {
+    hints: false,
+  },
+}
+```
+
+8. 打包
+
+```bash
+npm run build
+```
+
+加载已解压的扩展程序，选择 dist 的打包结果。
+
+### 调试 content scripts
+
+可以在 `source > Content scripts` 中找到插件的所有的 `Content scripts`，任意添加断点进行调试 `JS`。
+
+![debug content scripts](/Users/guohualiang/Desktop/md/blog/chrome/debug-conten-script.png)
+
+### 调试 Background
+
+可以在插件界面，找到 **background.html** 的链接，点击便可打开背景页的调试控制台。
+
+![debug backgound](/Users/guohualiang/Desktop/md/blog/chrome/debug-backgound.png)
+
+### 调试 Popup.js
+
+Popup 与普通的 Web 调试类似，可以在右击 **工具栏插件图标** 后，在展开的内容上选择 **审查弹出内容**，即可打开 **Popup 页面** 的调试控制台。
+
+![debug popup.js](/Users/guohualiang/Desktop/md/blog/chrome/debug-popup.png)
+
+# 参考
+
+- [谷歌插件文档](https://developer.chrome.com/docs/extensions/reference/)
+- [chrome 插件调试技巧](https://blog.spoock.com/2016/04/03/chrome-extension-debugging/)
 - https://crxdoc-zh.appspot.com/extensions/messaging
-- https://dev.to/anobjectisa/build-a-chrome-extension-using-reactjs-38o7
-- https://medium.com/swlh/how-to-build-a-chrome-extension-with-react-typescript-and-webpack-92e806ce2e16
-- https://dev.to/bayardlouis470/create-chrome-extension-in-react-3pna
+- [Build a Chrome Extension Using ReactJS](https://dev.to/anobjectisa/build-a-chrome-extension-using-reactjs-38o7)
+- [How to Build a Chrome Extension With React, TypeScript, and Webpack](https://medium.com/swlh/how-to-build-a-chrome-extension-with-react-typescript-and-webpack-92e806ce2e16)
+- [Create Chrome Extension in React](https://dev.to/bayardlouis470/create-chrome-extension-in-react-3pna)
+- [What are the differences between page action and browser action](https://stackoverflow.com/questions/44712495/what-are-the-differences-between-page-action-and-browser-action/44713058)
