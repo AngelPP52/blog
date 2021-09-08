@@ -273,7 +273,7 @@ content_scripts 可以直接调用的 Chrome API：
 
 未指定 `activeTab` 权限时调用动态注入 API 时，会报以下错：
 
-![image-20210818150207925](/Users/guohualiang/Desktop/md/blog/chrome/exexecuteScript-error.png)
+![image-20210818150207925](exexecuteScript-error.png)
 
 动态注入脚本代码、脚本文件的示例代码:
 
@@ -313,11 +313,11 @@ chrome.runtime.onMessage.addListener(
 
 这是官网介绍 `background`、`content-script`、`devtool-page` 之间关系的图:
 
-![devtools-page](/Users/guohualiang/Desktop/md/blog/chrome/devtools-page.png)
+![devtools-page](devtools-page.png)
 
 定制开发者面板有关代码：
 
-![devtools-panel-sidebar](/Users/guohualiang/Desktop/md/blog/chrome/devtools-panel-sidebar.png)
+![devtools-panel-sidebar](devtools-panel-sidebar.png)
 
 1、添加面板 js / devtools.js
 
@@ -355,7 +355,7 @@ chrome.devtools.panels.elements.createSidebarPane("My Sidebar",
 
 通常，可以使用配置页面，管理一些后台数据、用户交互习惯等数据等，结合 `storage.sync` API 一起使用。
 
-<img src="/Users/guohualiang/Desktop/md/blog/chrome/click-option-page.png" alt="click-option-page" style="zoom: 80%;" />
+<img src="click-option-page.png" alt="click-option-page" style="zoom: 80%;" />
 
 1、以页面的方式打开 `option page`
 
@@ -716,7 +716,7 @@ window.addEventListener("message", function(event) {
 
 4. 如果修改了本地的代码，通过点击 **刷新** 图标按钮，重新加载插件。
 
-<img src="/Users/guohualiang/Desktop/md/blog/chrome/open-chrome-extensions.png" alt="start a chrome etension" style="zoom: 50%;" />
+<img src="open-chrome-extensions.png" alt="start a chrome etension" style="zoom: 50%;" />
 
 ### 创建项目 (React)
 
@@ -1025,19 +1025,19 @@ npm run build
 
 可以在 `source > Content scripts` 中找到插件的所有的 `Content scripts`，任意添加断点进行调试 `JS`。
 
-![debug content scripts](/Users/guohualiang/Desktop/md/blog/chrome/debug-conten-script.png)
+![debug content scripts](debug-conten-script.png)
 
 ### 调试 Background
 
 可以在插件界面，找到 **background.html** 的链接，点击便可打开背景页的调试控制台。
 
-![debug backgound](/Users/guohualiang/Desktop/md/blog/chrome/debug-backgound.png)
+![debug backgound](debug-backgound.png)
 
 ### 调试 Popup.js
 
 Popup 与普通的 Web 调试类似，可以在右击 **工具栏插件图标** 后，在展开的内容上选择 **审查弹出内容**，即可打开 **Popup 页面** 的调试控制台。
 
-![debug popup.js](/Users/guohualiang/Desktop/md/blog/chrome/debug-popup.png)
+![debug popup.js](debug-popup.png)
 
 # 参考
 
