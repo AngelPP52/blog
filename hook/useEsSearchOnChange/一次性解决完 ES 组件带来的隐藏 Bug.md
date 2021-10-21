@@ -193,11 +193,6 @@ const [esState, esProps] = useEsSearchOnChange(selectOptions); // selectOptions 
 <SelectInput
   selectOptions={selectOptions}
   {...esProps}
-  selectProps={{
-    defaultValue: 'product_name',
-      style: { width: 160 },
-        dropdownMatchSelectWidth: 336
-  }}
   />
 ...
  <ProTable 
