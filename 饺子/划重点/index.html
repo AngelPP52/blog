@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>饺子-划重点</title>
 </head>
+
 <body>
   <div>
+    <h3>菜单：</h3>
     <ul>
       <li>
         <a href=".">to 划重点</a>
@@ -24,7 +27,7 @@
     container.style.textAlign = 'center';
     for (let i = 0; i < 6; i++) {
       for (let j = 0; j < 8; j++) {
-        const filename = `${i+1}.${j+1}.webp`;
+        const filename = `${i + 1}.${j + 1}.webp`;
         const img = document.createElement('img');
         img.src = filename;
         img.style.display = 'inline-block';
@@ -35,4 +38,5 @@
     }
   </script>
 </body>
+
 </html>
