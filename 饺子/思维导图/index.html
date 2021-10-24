@@ -27,18 +27,21 @@
   <div id="container"></div>
   <script>
     const loadSvg = function(svgName){
-      const h1 = document.createElement('h1');
-      h1.innerHTML = svgName;
-      container.appendChild(h1);
+      const iframe = document.createElement('iframe');
+      container.appendChild(iframe);
       xhr = new XMLHttpRequest();
-      xhr.open("GET",`${svgName}.svg`,false);
+      xhr.open("GET",`./${svgName}.svg`,false);
       // Following line is just to be on the safe side;
       // not needed if your server delivers SVG with correct MIME type
       xhr.overrideMimeType("image/svg+xml");
       xhr.onload = function(e) {
         // You might also want to check for xhr.readyState/xhr.status here
-        container
-          .appendChild(xhr.responseXML.documentElement);
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        const iframeBody = iframeDoc.body;
+        const h1 = iframeDoc.createElement('h1');
+        h1.innerHTML = svgName;
+        iframeBody.appendChild(h1);
+        iframeBody.appendChild(xhr.responseXML.documentElement);
       };
       xhr.send("");
     }
