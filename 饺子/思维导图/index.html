@@ -35,7 +35,7 @@
     }
     function loadSvg(svgName) {
       const iframe = document.createElement('iframe');
-      iframe.addEventListener('onload', resizeIframe);
+      iframe.addEventListener('load', resizeIframe);
       container.appendChild(iframe);
       xhr = new XMLHttpRequest();
       xhr.open("GET", `./${svgName}.svg`, false);
