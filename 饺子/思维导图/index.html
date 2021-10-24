@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>饺子-思维导图</title>
 </head>
 <style>
-  svg[viewBox] svg:last-child{
+  svg[viewBox] svg:last-child {
     display: none;
   }
 </style>
+
 <body>
   <div>
     <ul>
@@ -26,15 +28,21 @@
   </div>
   <div id="container"></div>
   <script>
-    const loadSvg = function(svgName){
+  </script>
+  <script>
+    function resizeIframe(obj) {
+      obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+    }
+    function loadSvg(svgName) {
       const iframe = document.createElement('iframe');
+      iframe.addEventListener('onload', resizeIframe);
       container.appendChild(iframe);
       xhr = new XMLHttpRequest();
-      xhr.open("GET",`./${svgName}.svg`,false);
+      xhr.open("GET", `./${svgName}.svg`, false);
       // Following line is just to be on the safe side;
       // not needed if your server delivers SVG with correct MIME type
       xhr.overrideMimeType("image/svg+xml");
-      xhr.onload = function(e) {
+      xhr.onload = function (e) {
         // You might also want to check for xhr.readyState/xhr.status here
         const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
         const iframeBody = iframeDoc.body;
@@ -51,4 +59,5 @@
 
   </script>
 </body>
+
 </html>
