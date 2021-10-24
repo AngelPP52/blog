@@ -12,7 +12,8 @@
       width: 100%;
       background: white;
     }
-    #container{
+
+    #container {
       margin-top: 300px;
     }
   </style>
@@ -32,19 +33,19 @@
         <a href="../必背题/">to 必背题</a>
       </li>
     </ul>
-    <div>
+    <!-- <div>
       <style>
-        li {
+        #tree li {
           cursor: pointer;
         }
       </style>
       <h3>目录：</h3>
-      <ul>
+      <ul id="tree">
         <li onclick="loadSvg('1','第一章 教育知识与能力概要')">第一章 教育知识与能力概要</li>
         <li onclick="loadSvg('3','第三章 中学教学')">第三章 中学教学</li>
         <li onclick="loadSvg('4','第四章 中学生学习心理')">第四章 中学生学习心理</li>
       </ul>
-    </div>
+    </div> -->
   </div>
   <div id="container">
   </div>
@@ -54,7 +55,7 @@
     let selected = ``;
     function loadSvg(no, svgName) {
       if (selected !== no) {
-        container.innerHTML = null;
+        // container.innerHTML = null;
         const iframe = document.createElement('div');
         container.appendChild(iframe);
         xhr = new XMLHttpRequest();
@@ -85,8 +86,8 @@
       }
     }
     loadSvg('1', '第一章 教育知识与能力概要');
-    // loadSvg('第三章 中学教学');
-    // loadSvg('第四章 中学生学习心理');
+    loadSvg('3', '第三章 中学教学');
+    loadSvg('4', '第四章 中学生学习心理');
 
   </script>
 </body>
