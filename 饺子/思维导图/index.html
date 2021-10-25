@@ -14,7 +14,7 @@
     }
 
     #container {
-      margin-top: 300px;
+      margin-top: 200px;
     }
   </style>
 </head>
@@ -68,18 +68,18 @@
           // You might also want to check for xhr.readyState/xhr.status here
           const shadowRoot = iframe.attachShadow({ mode: 'open' });  // ②
           shadowRoot.innerHTML = `
-          <h1>${svgName}</h1>
-          ${xhr.responseXML.documentElement.outerHTML}
-        `;
+            <h1>${svgName}</h1>
+            ${xhr.responseXML.documentElement.outerHTML}
+          `;
           const style = document.createElement('style');
           style.textContent = `
-          svg[viewBox] svg:last-child {
-            display: none;
-          }
-          h1 {
-            text-align: center
-          }
-        `
+            svg[viewBox] svg:last-child {
+              display: none;
+            }
+            h1 {
+              text-align: center
+            }
+          `;
           shadowRoot.appendChild(style);
         };
         xhr.send("");
@@ -88,6 +88,7 @@
     loadSvg('1', '第一章 教育知识与能力概要');
     loadSvg('3', '第三章 中学教学');
     loadSvg('4', '第四章 中学生学习心理');
+    loadSvg('7', '第七章 中学德育');
 
   </script>
 </body>
