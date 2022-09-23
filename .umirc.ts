@@ -1,7 +1,11 @@
 import { IConfig } from 'dumi';
 
+const repo = 'blog';
+
 const config: IConfig = {
   mode: 'site',
+
+  outputPath: 'docs-dist',
 
   // 站点 meta 信息
   title: 'AngelPP Blog',
@@ -12,6 +16,9 @@ const config: IConfig = {
       'docs', // 本地目录下的 md 文件
     ],
   },
+
+  base: `/${repo}/`,
+  publicPath: `/${repo}/`,
 
   dynamicImport: {},
   fastRefresh: {},
