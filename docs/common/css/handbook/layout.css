@@ -1,0 +1,974 @@
+/* code by lgh at 2019-8-14 14:40 
+* 命名规则：
+* 功能+目标元素类型（缺省表示兼容所有元素）+方法+父/子/左/中/右元素（dom结构关系，缺省表示目标元素只有一个时）+下标（同一方法多种实现）
+* 其他规定：
+* 针对定宽，定高属性，将交由具体实际情况重设
+*/
+
+/* 一、水平居中 */
+
+/* 1.1.文本/行内元素/行内块级元素 */
+
+.center-inline {
+  text-align: center;
+}
+
+/* 1.2.单个块级元素 定宽 */
+
+.center-single-block {
+  width: 100px;
+  margin: 0 auto;
+}
+
+/* 1.3.多个块级元素 */
+
+.center-muilti-block-parent {
+  text-align: center;
+}
+
+.center-muilti-block-son {
+  display: inline-block;
+}
+
+/* 1.4.使用绝对定位实现 定宽 */
+
+.center-absolute-parent {
+  width: 200px;
+  position: relative;
+}
+
+.center-absolute-son {
+  position: absolute;
+  left: 50px;
+  transform: translateX(-50%);
+  width: 100px;
+}
+
+/* 1.5.任意个元素(flex) */
+
+.center-any {
+  display: flex;
+  justify-content: center;
+}
+
+/* 二、垂直居中 */
+
+/* 2.1.文本/行内元素/行内块级元素 */
+
+.middle-inline {
+  height: 200px;
+  /* 单行文本：与height值一致。多行文本：height / 行数 */
+  line-height: 200px;
+}
+
+/* 2.2.图片 */
+
+.middle-img-parent {
+  height: 150px;
+  line-height: 150px;
+  font-size: 0;
+}
+
+img.middle-img-son {
+  vertical-align: middle;
+}
+
+/* 2.3.单个块级元素 */
+
+/* 2.3.1.使用table-cell实现 */
+
+.middle-single-block-table-cell {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+/* 2.3.2.使用绝对定位实现 定高（子、父）
+* 原理（子绝父相，top、right、bottom、left的值都是相对于父元素的尺寸的，margin、transform是相对自身尺寸的）
+*/
+
+.middle-single-block-absolute-parent-1 {
+  height: 150px;
+  position: relative;
+}
+
+.middle-single-block-absolute-son-1 {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 50px;
+}
+
+/* 2.3.3.使用绝对定位实现 定高（子） 
+* 原理（top、bottom为0时，margin-top&margin-bottom会无限延伸占满空间并且平分）
+*/
+
+.middle-single-block-absolute-parent-2 {
+  position: relative;
+}
+
+.middle-single-block-absolute-son-2 {
+  position: absolute;
+  margin: auto 0;
+  top: 0;
+  bottom: 0;
+  height: 50px;
+}
+
+/* 2.3.4.使用flex实现 */
+
+.middle-single-block-flex-1 {
+  display: flex;
+  align-items: center;
+}
+
+/* 2.3.5.使用flex实现 */
+
+.middle-single-block-flex-2-parant {
+  display: flex;
+}
+
+.middle-single-block-flex-2-son {
+  align-self: center;
+}
+
+/* 2.3.6.使用flex实现 */
+
+.middle-single-block-flex-3-parant {
+  display: flex;
+}
+
+.middle-single-block-flex-3-son {
+  margin: auto 0;
+}
+
+/* 2.4.任意个元素（flex） */
+
+/* 2.4.1. */
+
+.middle-any-flex-1 {
+  display: flex;
+}
+
+/* 2.4.2 */
+
+.middle-any-flex-2-parant {
+  display: flex;
+}
+
+.middle-any-flex-2-son {
+  align-self: center;
+}
+
+/* 2.4.3 */
+
+.middle-any-flex-3 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* 三、水平垂直居中 */
+
+/* 3.1.行内/行内块级/图片 */
+
+.both-inline-parent {
+  height: 150px;
+  line-height: 150px;
+  text-align: center;
+  font-size: 0;
+}
+
+.both-inline-son {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* 3.2.使用tabel-cell */
+
+.both-table-cell-parent {
+  display: table-cell;
+  vertical-align: middle;
+  /* 行内元素 */
+  text-align: center;
+}
+
+.both-table-cell-son {
+  /* 块级元素 */
+  margin: 0 auto;
+}
+
+/* 3.3.button作为父元素 */
+
+button.both-button-parent {
+  outline: none;
+  border: none;
+}
+
+.both-button-son {
+  display: inline-block;
+}
+
+/* 3.4.绝对定位 */
+
+/* 3.4.1. 使用margin需要知道宽高 */
+
+.both-absolute-parent-1 {
+  position: relative;
+}
+
+.both-absolute-son-1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* 定宽高时，等同于margin-left：负自身宽度一半，margin-top：负自身高度一半 */
+  transform: translate(-50%, -50%);
+}
+
+/* 3.4.2. 无需关注宽高 */
+
+.both-absolute-parent-2 {
+  position: relative;
+}
+
+.both-absolute-son-2 {
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+/* 3.5.使用flex */
+
+/* 3.5.1. */
+
+.both-flex-parent-1 {
+  display: flex;
+}
+
+.both-flex-son-1 {
+  margin: auto;
+}
+
+/* 3.5.2. */
+
+.both-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 3.5.3. */
+
+.both-flex-parent-2 {
+  display: flex;
+  justify-content: center;
+}
+
+.both-flex-son-2 {
+  align-self: center;
+}
+
+/* 3.6.视窗居中 vh是视口单位，文档可视部分 */
+
+.both-screen {
+  margin: 50vh auto 0;
+  transform: translateY(-50%);
+}
+
+/* 四、两列布局 */
+
+/* 4.1.左列定宽 右列自适应 */
+
+/* 4.1.1.利用float+margin实现 */
+
+.left-fix-right-auto-float-margin-left {
+  float: left;
+  width: 100px;
+}
+
+.left-fix-right-auto-float-margin-right {
+  /* 大于等于#left的宽度 */
+  margin-left: 100px;
+}
+
+/* 4.1.2.利用float+margin（fix）实现 */
+
+.left-fix-right-auto-float-margin-fix-left {
+  float: left;
+  width: 100px;
+}
+
+.left-fix-right-auto-float-margin-fix-right-fix {
+  float: right;
+  width: 100%;
+  /* 正值大于或等于#left的宽度，才能显示到同一行 */
+  margin-left: -100px;
+}
+
+.left-fix-right-auto-float-margin-fix-right {
+  /* 大于或等于#left的宽度 */
+  margin-left: 100px;
+}
+
+/* 4.1.3.利用float+overflow实现 无需关注定宽的宽度 */
+
+.left-fix-right-auto-float-overflow-left {
+  float: left;
+  width: 100px;
+}
+
+.left-fix-right-auto-float-overflow-right {
+  /* 触发bfc达到自适应 */
+  overflow: hidden;
+}
+
+/* 4.1.4.利用table实现 */
+
+.left-fix-right-auto-table-parent {
+  width: 100%;
+  display: table;
+}
+
+.left-fix-right-auto-table-left {
+  width: 100px;
+}
+
+.left-fix-right-auto-table-left .left-fix-right-auto-table-right {
+  display: table-cell;
+}
+
+/* 4.1.5.利用绝对定位实现 */
+
+.left-fix-right-auto-absolute-parent {
+  position: relative;
+}
+
+.left-fix-right-auto-absolute-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px;
+}
+
+.left-fix-right-auto-absolute-right {
+  position: absolute;
+  top: 0;
+  /* 大于等于#left的宽度 */
+  left: 100px;
+  right: 0;
+}
+
+/* 4.1.6.使用flex实现 */
+
+.left-fix-right-auto-flex-parent {
+  width: 100%;
+  display: flex;
+}
+
+.left-fix-right-auto-flex-left {
+  width: 100px;
+}
+
+.left-fix-right-auto-flex-right {
+  /* 均分父元素剩余空间 */
+  flex: 1;
+}
+
+/* 4.1.7.使用grid实现 应用到父元素*/
+
+.left-fix-right-auto-grid {
+  width: 100%;
+  display: grid;
+  /* 设定2列，auto可换成1fr */
+  grid-template-columns: 100px auto;
+}
+
+/* 4.2.左列自适应，右列定宽 */
+
+/* 4.2.1.利用float+margin实现 */
+
+.left-auto-right-fix-float-margin-parent {
+  /* 抵消#left的margin-left以达到#parent水平居中 */
+  padding-left: 100px;
+}
+
+.left-auto-right-fix-float-margin-left {
+  width: 100%;
+  float: left;
+  margin-left: -100px;
+}
+
+.left-auto-right-fix-float-margin-right {
+  width: 100px;
+  float: right;
+}
+
+/* 4.2.2.利用float+overflow实现 无需关注定宽的宽度 */
+
+.left-auto-right-fix-float-overflow-left {
+  /* 触发bfc达到自适应 */
+  overflow: hidden;
+}
+
+.left-auto-right-fix-float-overflow-right {
+  float: right;
+  width: 100px;
+  margin-left: 10px;
+}
+
+/* 4.2.3.利用table实现 */
+
+.left-auto-right-fix-table-parent {
+  width: 100%;
+  display: table;
+}
+
+.left-auto-right-fix-table-right {
+  width: 100px;
+}
+
+.left-auto-right-fix-table-left .left-auto-right-fix-table-right {
+  display: table-cell;
+}
+
+/* 4.2.4.利用绝对定位实现 */
+
+.left-auto-right-fix-absolute-parent {
+  position: relative;
+}
+
+.left-auto-right-fix-absolute-left {
+  position: absolute;
+  top: 0;
+  /* 大于等于#right的宽度 */
+  right: 100px;
+  left: 0;
+}
+
+.left-auto-right-fix-absolute-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+}
+
+/* 4.2.5.使用flex实现 */
+
+.left-auto-right-fix-flex-parent {
+  width: 100%;
+  display: flex;
+}
+
+.left-auto-right-fix-flex-left {
+  /* 均分父元素剩余空间 */
+  flex: 1;
+}
+
+.left-auto-right-fix-flex-right {
+  width: 100px;
+}
+
+/* 4.2.6.使用grid实现 应用到父元素*/
+
+.left-auto-right-fix-grid {
+  width: 100%;
+  display: grid;
+  /* 设定2列，auto可换成1fr */
+  grid-template-columns: auto 100px;
+}
+
+/* 4.3.一列不定，一列自适应（例如：左列不定宽，右列自适应） */
+
+/* 4.3.1.使用float+overflow实现 */
+
+.unset-auto-float-overflow-left {
+  float: left;
+  margin-right: 10px;
+}
+
+.unset-auto-float-overflow-right {
+  overflow: hidden;
+}
+
+/* 4.3.2.使用flex实现 */
+
+.unset-auto-flex-parent {
+  display: flex;
+}
+
+.unset-auto-flex-left {
+  margin-left: 10px;
+}
+
+.unset-auto-flex-right {
+  /* 均分#parent剩余的部分 */
+  flex: 1;
+}
+
+/* 4.3.3.使用grid实现 */
+
+.unset-auto-grid-parent {
+  display: grid;
+  /* auto和1fr互换就是左列自适应，右列不定宽 */
+  grid-template-columns: auto 1fr;
+}
+
+/* 五、三列布局 */
+
+/* 5.1.两列定宽，一列自适应（例如：左中定宽，右自适应）（省略header和footer的定义） */
+
+/* 5.1.1.使用float+marign实现 */
+
+.fix2-auto-float-margin-parent {
+  /* 100 + 10 + 200，防止宽度不够，子元素换行 */
+  min-width: 310px;
+}
+
+.fix2-auto-float-margin-left {
+  margin-right: 10px;
+  float: left;
+  width: 100px;
+}
+
+.fix2-auto-float-margin-center {
+  float: left;
+  width: 200px;
+}
+
+.fix2-auto-float-margin-right {
+  /* 等于#left和#center的宽度之和加上间隔，多出来的就是#right和#center的间隔 */
+  margin-left: 320px;
+}
+
+/* 5.1.2.使用float+overflow实现 */
+
+.fix2-auto-float-overflow-parent {
+  /* 100 + 10 + 200，防止宽度不够，子元素换行 */
+  min-width: 310px;
+}
+
+.fix2-auto-float-overflow-left {
+  margin-right: 10px;
+  float: left;
+  width: 100px;
+}
+
+.fix2-auto-float-overflow-center {
+  margin-left: 10px;
+  float: left;
+  width: 200px;
+}
+
+.fix2-auto-float-overflow-right {
+  /* 触发bfc */
+  overflow: hidden;
+}
+
+/* 5.1.3.使用table实现 */
+
+.fix2-auto-table-parent {
+  width: 100%;
+  /* 抵消上下边间距10的位置影响 */
+  margin: -10px 0;
+  display: table;
+  /* （必需设置间距）左右边间距大了一点，子元素改用padding设置盒子间距就没问题了 */
+  border-spacing: 10px;
+}
+
+.fix2-auto-table-left .fix2-auto-table-center {
+  width: 100px;
+}
+
+.fix2-auto-table-left .fix2-auto-table-center .fix2-auto-table-right {
+  display: table-cell;
+}
+
+/* 5.1.4.使用flex实现 */
+
+.fix2-auto-flex-parent {
+  display: flex;
+}
+
+.fix2-auto-flex-left {
+  margin-right: 10px;
+  width: 100px;
+}
+
+.fix2-auto-flex-center {
+  margin-right: 10px;
+  width: 200px;
+}
+
+.fix2-auto-flex-right {
+  /* 均分#parent剩余的部分达到自适应 */
+  flex: 1;
+}
+
+/* 5.1.5.使用grid实现 */
+
+.fix2-auto-grid {
+  display: grid;
+  grid-template-columns: 100px 200px auto;
+}
+
+/* 5.2.两侧定宽，中间自适应 */
+
+/* 5.2.1.双飞翼布局方法 （底部元素注意消除浮动，在调用处写） */
+
+.fix-auto-fix-double-fly-left {
+  float: left;
+  width: 100px;
+  /* 调整#left的位置，值等于自身宽度 */
+  margin-left: -100%;
+}
+
+.fix-auto-fix-double-fly-center {
+  float: left;
+  width: 100%;
+}
+
+.fix-auto-fix-double-fly-center-inbox {
+  /* 关键，左右边界等于左右盒子的宽度，多出来的为盒子间隔 */
+  margin: 0 220px 0 120px;
+}
+
+.fix-auto-fix-double-fly-right {
+  float: left;
+  width: 200px;
+  /* 使right到指定的位置，值等于自身高度 */
+  margin-left: -200px;
+}
+
+/* 5.2.2.圣杯布局方法（注意，html中#center要写在#left和#right的前面） */
+
+.fix-auto-fix-grail-parent {
+  box-sizing: border-box;
+  /* 为了使#center摆正，左右padding分别等于左右盒子的宽，可以结合左右盒子相对定位的left调整间距 */
+  padding: 0 215px 0 115px;
+}
+
+.fix-auto-fix-grail-left {
+  margin-left: -100%;
+  position: relative;
+  left: -115px;
+  float: left;
+  width: 100px;
+}
+
+.fix-auto-fix-grail-center {
+  float: left;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.fix-auto-fix-grail-right {
+  position: relative;
+  /* 相对定位调整#right的位置，大于或等于自身宽度 */
+  left: 215px;
+  width: 200px;
+  /* 使#right上去一行 */
+  margin-left: -200px;
+  float: left;
+}
+
+/* 5.2.3.使用grid实现 */
+
+.fix-auto-fix-grid-parent {
+  display: grid;
+  /* 设置三列 */
+  grid-template-columns: 100px auto 200px;
+  /* 设置三行 */
+  grid-template-rows: 60px auto 60px;
+  /* 设置网格区域分布 */
+  grid-template-areas: "header header header""leftside main rightside""footer footer footer";
+}
+
+.fix-auto-fix-grid-left {
+  grid-area: leftside;
+}
+
+.fix-auto-fix-grid-center {
+  grid-area: main;
+  margin: 0 15px;
+}
+
+.fix-auto-fix-grid-right {
+  grid-area: rightside;
+}
+
+/* 5.2.4.使用table实现 */
+
+.fix-auto-fix-table-parent {
+  width: 100%;
+  display: table;
+}
+
+.fix-auto-fix-table-left .fix-auto-fix-table-right {
+  width: 100px;
+}
+
+.fix-auto-fix-table-left .fix-auto-fix-table-right .fix-auto-fix-table-center {
+  display: table-cell;
+}
+
+/* 5.2.5.使用flex实现 */
+
+.fix-auto-fix-flex-parent {
+  display: flex;
+}
+
+.fix-auto-fix-flex-left .fix-auto-fix-flex-right {
+  width: 100px;
+}
+
+.fix-auto-fix-flex-center {
+  flex: 1;
+}
+
+/* 5.2.6.使用绝对定位实现 */
+
+.fix-auto-fix-absolute-parent {
+  position: relative;
+}
+
+.fix-auto-fix-absolute-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px;
+}
+
+.fix-auto-fix-absolute-center {
+  /* 大于等于#left的宽度，或者给#parent添加同样大小的padding-left */
+  margin-left: 100px;
+  /* 大于等于#right的宽度，或者给#parent添加同样大小的padding-right */
+  margin-right: 200px;
+}
+
+.fix-auto-fix-absolute-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200px;
+}
+
+/* 六、多列布局 */
+
+/* 6.1.等宽布局 */
+
+/* 6.1.1.使用float实现 */
+
+.multi-column-average-float-parent {
+  /* 使整体内容看起来居中，抵消padding-left的影响 */
+  margin-left: -20px;
+}
+
+.multi-column-average-float-item {
+  padding-left: 20px;
+  /* 数值等于 100/列数 */
+  width: 25%;
+  float: left;
+  box-sizing: border-box;
+  /* 背景色从内容开始绘制 */
+  background-clip: content-box;
+}
+
+/* 6.1.2.使用table实现 */
+
+.multi-column-average-table-parent {
+  width: 100%;
+  display: table;
+  /* 抵消上下边20*2间距的位置影响 */
+  margin: -20px 0;
+  /* 设置间距 */
+  border-spacing: 20px;
+}
+
+.multi-column-average-table-item {
+  display: table-cell;
+}
+
+/* 6.1.3.使用flex实现 */
+
+.multi-column-average-flex-parent {
+  margin-left: -15px;
+  display: flex;
+}
+
+.multi-column-average-flex-item {
+  flex: 1;
+  margin-left: 15px;
+}
+
+/* 6.1.4.使用grid实现 */
+
+.multi-column-average-grid {
+  display: grid;
+  /* 6就是列数 */
+  grid-template-columns: repeat(6, 1fr);
+}
+
+/* 6.2.九宫格布局 */
+
+/* 6.2.1.使用table实现 */
+
+.grid-9-layout-table-parent {
+  margin: 0 auto;
+  display: table;
+}
+
+.grid-9-layout-table-row {
+  display: table-row;
+}
+
+.grid-9-layout-table-item {
+  display: table-cell;
+}
+
+/* 6.2.2.使用flex实现 */
+
+.grid-9-layout-flex-parent {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-9-layout-flex-row {
+  display: flex;
+  flex: 1;
+}
+
+.grid-9-layout-flex-item {
+  flex: 1;
+}
+
+/* 6.2.3.使用grid实现 */
+
+.grid-9-layout-grid {
+  margin: 0 auto;
+  display: grid;
+  /* 等同于1fr 1fr 1fr */
+  grid-template-columns: repeat(3, 1fr);
+  /* 等同于1fr 1fr 1fr */
+  grid-template-rows: repeat(3, 1fr);
+}
+
+/* 6.3.栅格系统 */
+
+/* 6.3.1使用Less生成（略） */
+
+/* 七、全屏布局 */
+
+/* 7.1.布局：top、middle（left、right）、bottom */
+
+/* 7.1.1.使用绝对定位实现（top、left、right、bottom） */
+
+html, body, .all-screen-layout-absoulte-parent {
+  height: 100%;
+  overflow: hidden;
+}
+
+.all-screen-layout-absoulte-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+}
+
+.all-screen-layout-absoulte-left {
+  position: absolute;
+  overflow: auto;
+  /* 大于或等于#top的高度 */
+  top: 100px;
+  left: 0;
+  /* 大于或等于#bottom的高度 */
+  bottom: 50xp;
+  width: 200px;
+}
+
+.all-screen-layout-absoulte-right {
+  position: absolute;
+  overflow: auto;
+  /* 大于或等于#left的宽度 */
+  left: 200px;
+  right: 0;
+  /* 大于或等于#top的高度 */
+  top: 50px;
+  /* 大于或等于#bottom的高度 */
+  bottom: 50px;
+}
+
+.all-screen-layout-absoulte-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 50px;
+}
+
+/* 7.1.2.使用flex实现（top、middle（left、right）、bottom） */
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body, .all-screen-layout-flex-parent {
+  height: 100%;
+}
+
+.all-screen-layout-flex-parent {
+  display: flex;
+  flex-direction: column;
+}
+
+.all-screen-layout-flex-top，.all-screen-layout-flex-bottom {
+  height: 100px;
+}
+
+.all-screen-layout-flex-middle {
+  flex: 1;
+  display: flex;
+}
+
+.all-screen-layout-flex-left {
+  width: 200px;
+}
+
+.all-screen-layout-flex-right {
+  flex: 1;
+  overflow: auto;
+}
+
+/* 7.1.3.使用grid实现 */
+
+html, body, .all-screen-layout-grid-parent {
+  height: 100%;
+}
+
+.all-screen-layout-grid-parent {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: 100px auto 50px;
+  grid-template-areas: "header header""aside main""footer footer";
+}
+
+.all-screen-layout-grid-top {
+  grid-area: header;
+}
+
+.all-screen-layout-grid-left {
+  grid-area: aside;
+}
+
+.all-screen-layout-grid-right {
+  grid-area: main;
+}
+
+.all-screen-layout-grid-bottom {
+  grid-area: footer;
+}

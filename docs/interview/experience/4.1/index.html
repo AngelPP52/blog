@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .bob{
+            color: red;
+        }
+        .bob div{
+            background: blue;
+        }
+        .bob > .tom > .alice{
+            background: gray;
+            color: gray;
+        }
+        .bob > div > div{
+            background: green;
+            color: green;
+        }
+        #id-alice{
+            color: purple;
+        }
+        body .bob > .tom > div.alice{
+            color: yellow;
+        }
+    </style>
+</head>
+<body>
+    <div class="bob">
+        <div class="tom">
+            <div class="alice" id="id-alice">Alice</div>
+        </div>
+    </div>
+    <div class="a">
+        <div class="b">
+            <button>click me</button>
+        </div>
+    </div>
+    <script>
+        const a = document.querySelector('.a');
+        const b = document.querySelector('.b');
+        const button = document.querySelector('button');
+
+        a.addEventListener('click', () => console.log(1));
+        a.addEventListener('click', () => console.log(2), true);
+        b.addEventListener('click', () => console.log(3));
+        b.addEventListener('click', () => console.log(4), true);
+        button.addEventListener('click', () => console.log(5));
+    </script>
+</body>
+</html>

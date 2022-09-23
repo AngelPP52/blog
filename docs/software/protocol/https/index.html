@@ -1,0 +1,2760 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" id="sixapart-standard">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="Movable Type  5.2.2" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!--link rel="stylesheet" href="http://www.ruanyifeng.com/blog/styles.css" type="text/css" /-->
+<link rel="start" href="http://www.ruanyifeng.com/blog/" title="Home" />
+<link rel="alternate" type="application/atom+xml" title="Recent Entries" href="http://feeds.feedburner.com/ruanyifeng" />
+<script type="text/javascript" src="http://www.ruanyifeng.com/blog/mt.js"></script>
+<!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="http://www.ruanyifeng.com/blog/2020/09/weekly-issue-127.html">
+<dc:title>科技爱好者周刊（第 127 期）：未来人人开发软件，几乎没人编码</dc:title>
+<dc:description>这里记录每周值得分享的科技内容，周五发布。（ 本周五是十一假期，周刊提前到周三发布。）...</dc:description>
+<dc:creator>阮一峰</dc:creator>
+<dc:date>2020-09-30T08:38:45+08:00</dc:date>
+<license rdf:resource="http://creativecommons.org/licenses/by-nc-nd/3.0/" />
+</Work>
+<License rdf:about="http://creativecommons.org/licenses/by-nc-nd/3.0/">
+</License>
+</rdf:RDF>
+-->
+
+<style>
+body {
+  background-color: #f5f5d5;
+}
+
+#container::before {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background: rgba(0,0,0,0.1);
+  text-align: center;
+  content: "本站显示不正常，可能因为您使用了广告拦截器。";
+}
+
+</style>
+<script>
+function loadjscssfile(filename, filetype){
+    if (filetype=="js"){ //if filename is a external JavaScript file
+        var fileref=document.createElement('script')
+        fileref.setAttribute("type","text/javascript")
+        fileref.setAttribute("src", filename)
+    }
+    else if (filetype=="css"){ //if filename is an external CSS file
+        var fileref=document.createElement("link")
+        fileref.setAttribute("rel", "stylesheet")
+        fileref.setAttribute("type", "text/css")
+        fileref.setAttribute("href", filename)
+    }
+    if (typeof fileref!="undefined")
+        document.getElementsByTagName("head")[0].appendChild(fileref)
+}
+//loadjscssfile("http://www.ruanyifeng.com/blog/styles.css", "css");
+loadjscssfile('/static/themes/theme_scrapbook/theme_scrapbook.min.css', "css");
+
+
+function checker() {
+// var img = document.querySelector('img[src^="http://www.ruanyifeng.com/blog/images"]');
+var img = document.querySelector('a > img[src*="wangbase.com/blogimg/asset/"]');
+  if (img && window.getComputedStyle(img).display === 'none'){
+    var sponsor = document.querySelector('.entry-sponsor');
+    var prompt = document.createElement('div');
+    prompt.style = 'border: 1px solid #c6c6c6;border-radius: 4px;background-color: #f5f2f0;padding: 15px; font-size: 14px;';
+  prompt.innerHTML = '<p>您使用了广告拦截器，导致本站内容无法显示。</p><p>请将 www.ruanyifeng.com 加入白名单，解除广告屏蔽后，刷新页面。谢谢。</p>';
+    sponsor.parentNode.replaceChild(prompt, sponsor);
+    document.querySelector('#main-content').innerHTML = '';
+  }
+}
+
+setTimeout(checker, 1000);
+</script>
+
+    
+    <link rel="prev" href="http://www.ruanyifeng.com/blog/2014/09/package-management.html" title="前端模块管理器简介" />
+    <link rel="next" href="http://www.ruanyifeng.com/blog/2014/09/ssl-latency.html" title=" SSL延迟有多大？" />
+    
+    <title>图解SSL/TLS协议 - 阮一峰的网络日志</title>
+</head>
+<body id="scrapbook" class="mt-entry-archive one-column">
+<script>
+if (/mobile/i.test(navigator.userAgent) || /android/i.test(navigator.userAgent)) document.body.classList.add('mobile');
+
+/*
+window.addEventListener('load', function(event) {
+  setTimeout(function () {
+    hab('#sup-post-2');
+    hab('#cre-inner');
+  }, 1000);
+});
+*/
+</script>
+    <div id="container">
+        <div id="container-inner">
+
+            <div id="header">
+    <div id="header-inner">
+        <div id="header-content">
+
+
+            <div id="header-name">阮一峰的网络日志 <span id="site_location"> » <a href="http://www.ruanyifeng.com/blog/" accesskey="1">首页</a></span><span id="site_archive"> » <a href="http://www.ruanyifeng.com/blog/archives.html">档案</a></span>
+</div>
+
+<div id="google_search">
+<!-- SiteSearch Google -->
+<form action="https://www.baidu.com/s" target="_blank" method="get" id="cse-search-box">
+  <div>
+  <input type="text" size="20" name="origin" class="searchbox" id="sbi" value="" />
+  <input type="hidden" name="wd" value="" />
+  <!--input type="image" src="/static/themes/theme_scrapbook/images/top_search_submit.gif" class="searchbox_submit" value="" alt="搜索" name="sa" onclick="this.form.wd.value = this.form.origin.value + ' inurl:www.ruanyifeng.com/blog'" /-->
+  <input type="image" src="/static/themes/theme_scrapbook/images/top_search_submit.gif" class="searchbox_submit" value="" alt="搜索" name="sa" onclick="this.form.wd.value = this.form.origin.value + ' 阮一峰'" />
+</div>
+</form>
+
+<!-- SiteSearch Google -->
+</div>
+<div id="feed_icon">
+<a href="/feed.html" title="订阅Feed">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAUzSURBVHjavFdbbFRVFF3nPjoz7dTWTittaW0jUDRAUqaNojyqREnEQKgfUj9MqqAmhqRt/OCD4CuY+Kckoh+aiGKC+gMJbdHoRysJ8dkhhmJLNdDKtJU+6GMK87j3Hs85d2Z6HzNtMYWb3Dn3NWftvfba+5xNYDl+e6Fkj6yqb/oDRbWq14vlPBLRKCITkxf0ROLt+hNjp1PPSRK4kA3vF1dXNRcWlyA2OQU9eos9opAkAiKxD+XkKO6t15aRWO7J/MgmAZU8MEgexgZHMX518Dh72sYMmVKShnxWuWHdHtxKIDIYTgMuDzgfmSOIQkYMpdUF8OY92Hytt4/jvkg47czzU16iQovM3QFwmNck+Yyduu7D6NA0Z6JR4THntFs9V4tWQg6Ui3s6MwKDncsFTnXKLJhDSeUK3AgPtyhccDzmVs999buRt/1Vm4i0od+hX7+MRG87jPGB/w1u8FPj9xEw7McVrnYuOCvtpjTth3J/nTg99c8LRhKhr6D3dTB5R24bXFwbMXBsyZzeoXaycEpJ95TB09AGX/NpqLVNtw8urnVzLvHjFNxiFqRy2OOHuqUVnue+ACkoWzo4O6lGzTmuHq6nPvY2m9rVqjrIK2rMEKxqyG5NPAKt+wjo0LklgfNxJkZMA3KJvqRUk3z5UFY3QH14P0h+WUY79HPvgv7VuSg4ZRGY1YgZgqXmORccF17sy2ehnf9AeO085K2HQFbtXBScj0LcpgF2cN+WV+DZ/LJQu6gD4R7oV7pBJwbSgtMvfiPoVp56DySwxm7EtkMs1WdAB7qzggsDJKQYsHucSkOudrkiCPWR/fA2nYCn8SNIK4NptSMyAu3sAdDRkIsJdfth0LzSrODUoPNZ4KI9SxJI5UHk7D4GdQfz2us31c7CoHMjRkKuDPHseCMrONVhNcDJwMJpKFVvg9L4OaTiNWm1x789KCqkrXhVBiEz0WYCT2nAzQAD1/vaETv1GrRfP4Vx5cfMNcDPwvP0h0DhanPym7OIf/+O67vcJ1/PCJ4KgdzaUP6Wz+dU+5yIL6fV+PsHGAOdwlPpvvUOyeeAVGyCdqkDNB6DPjsBSrnndfOGevOh3RhGItxvA+fX1CtbGFhgYUFkFMZPR6F1HnClHq8HyubWtJexX06CRmdt33hrd7nA7SFY4qoGpnYuOKcRykPPgDCBcsHx9Iv+fNL2PueBehCWUfYQIIMGLOCcOmXDXsh1+yCt35tUPfvzGFuSvzvoinXOxqa02qOhM6733nVP2MAdaej2XN11DPKjLZCD+yBvahGCo7JfTKAN9UD7s8Oe9zUNIhz8fWI8DG2k38WCFdxugANcXrvTVd1IEbuv3Jour7Hzn7jLMBNfKs7R3i67gRVrbeCOEDhinmWhAatsqdquM2XzHZINhK2cqTjHr/XZdVJUbgN3MWAVXKbSyg9jesRW2xP9di+lwrL5ojM3m2H/kG9hwcIA37c71W6wJdW2J2S5nrjYbq/t1AHAhJsKQeyfPvf6IMJgghPJhFZ4x0KlfLFvt22du45Au/A1SOlGc0P672XXwhLtOcM0kTTEMMd0qkVmMNXxMd/tsedUjInr4SQDgOfeXMSiN0FCL5WHah4L1qqYXPJOJlttd+a5M+YpcG5poLYKQ5f+6JJ4r8bbJYP47hq4r7QAs9PjYNhHJd4o8l5taiwuOpa7AS4XKqI/5NjJbTnaWK92nLdLuhQAJayRNMiygXPBeQN+Qbvu0zDc3y+aUzhbkGR73sI7ljvUnndx2q3t+X8CDAD66FtrIL864AAAAABJRU5ErkJggg==" alt="" style="border: 0pt none;" />
+</a></div>
+
+        </div>
+    </div>
+</div>
+
+
+
+            <div id="content">
+                <div id="content-inner">
+
+
+                    <div id="alpha">
+                        <div id="alpha-inner">
+
+
+                            <div id="entry-1813" class="entry-asset asset hentry">
+                                <div class="asset-header">
+<div class="asset-nav entry-nav">
+
+<div class="entry-location">
+<ul>
+<li>上一篇：<a href="http://www.ruanyifeng.com/blog/2014/09/package-management.html" title="前端模块管理器简介">前端模块管理器简介&nbsp;&nbsp;</a></li>
+<li>下一篇：<a href="http://www.ruanyifeng.com/blog/2014/09/ssl-latency.html" title=" SSL延迟有多大？">&nbsp;SSL延迟有多大？&nbsp;</a></li>
+</ul>
+</div>
+
+
+    
+                                    <div class="entry-categories">
+                                        <p>分类<span class="delimiter">：</span></p>
+                                        <ul>
+                                            <li><a href="http://www.ruanyifeng.com/blog/developer/" rel="tag">开发者手册</a></li>
+                                        </ul>
+                                    </div>
+    
+
+
+                                            
+<div class="entry-location-mobile" style="float: right;">
+<ul>
+<li><a href="http://www.ruanyifeng.com/blog/2014/09/package-management.html" title="前端模块管理器简介">⇐&nbsp;</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2014/09/ssl-latency.html" title=" SSL延迟有多大？">&nbsp;⇒</a></li>
+</ul>
+</div>
+
+</div>
+</div>
+
+                          
+<article class="hentry">
+                                    <h1 id="page-title" class="asset-name entry-title">图解SSL/TLS协议</h1>
+                                            <div id="share_button" class="social-share" style="float:right;padding-right:2em;padding-top:1em;"></div>
+
+<div class="asset-meta">
+                                        
+
+                                            <p class="vcard author">作者： <a class="fn url" href="http://www.ruanyifeng.com">阮一峰</a></p>
+                                    <p>日期： <a href="http://www.ruanyifeng.com/blog/2014/09/"><abbr class="published" title="2014-09-20T18:33:54+08:00">2014年9月20日</abbr></a></p>
+
+
+</div>
+
+
+
+
+
+
+
+
+                                
+                                <div class="asset-content entry-content" id="main-content">
+
+                                    <!-- div class="asset-body" -->
+                                        <p>本周，<a href="https://www.cloudflare.com/">CloudFlare</a>宣布，开始提供Keyless服务，即你把网站放到它们的CDN上，不用提供自己的私钥，也能使用SSL加密链接。</p>
+
+                                    <!-- /div -->
+
+
+                                    <!-- div id="more" class="asset-more" -->
+                                        <p><img src="/blogimg/asset/2014/bg2014092001.png" alt="CloudFlare" title="" /></p>
+
+<p>我看了CloudFlare的说明（<a href="https://blog.cloudflare.com/announcing-keyless-ssl-all-the-benefits-of-cloudflare-without-having-to-turn-over-your-private-ssl-keys/">这里</a>和<a href="http://blog.cloudflare.com/keyless-ssl-the-nitty-gritty-technical-details/">这里</a>），突然意识到这是绝好的例子，可以用来说明SSL/TLS协议的运行机制。它配有插图，很容易看懂。</p>
+
+<p>下面，我就用这些图片作为例子，配合我半年前写的<a href="http://www.ruanyifeng.com/blog/2014/02/ssl_tls.html">《SSL/TLS协议运行机制的概述》</a>，来解释SSL协议。</p>
+
+<h2>一、SSL协议的握手过程</h2>
+
+<p>开始加密通信之前，客户端和服务器首先必须建立连接和交换参数，这个过程叫做握手（handshake）。</p>
+
+<p>假定客户端叫做爱丽丝，服务器叫做鲍勃，整个握手过程可以用下图说明（点击看大图）。</p>
+
+<p><a href="/blogimg/asset/2014/bg2014092002.png"><img src="/blogimg/asset/2014/bg2014092013.png" alt="" title="" /></a></p>
+
+<p>握手阶段分成五步。</p>
+
+<blockquote>
+  <p>第一步，爱丽丝给出协议版本号、一个客户端生成的随机数（Client random），以及客户端支持的加密方法。</p>
+
+<p>第二步，鲍勃确认双方使用的加密方法，并给出数字证书、以及一个服务器生成的随机数（Server random）。</p>
+
+<p>第三步，爱丽丝确认数字证书有效，然后生成一个新的随机数（Premaster
+secret），并使用数字证书中的公钥，加密这个随机数，发给鲍勃。</p>
+
+<p>第四步，鲍勃使用自己的私钥，获取爱丽丝发来的随机数（即Premaster secret）。</p>
+
+<p>第五步，爱丽丝和鲍勃根据约定的加密方法，使用前面的三个随机数，生成"对话密钥"（session key），用来加密接下来的整个对话过程。</p>
+</blockquote>
+
+<p>上面的五步，画成一张图，就是下面这样。</p>
+
+<p><a href="/blogimg/asset/2014/bg2014092003.png"><img src="bg2014092004.png" alt="" title="" /></a></p>
+
+<h2>二、私钥的作用</h2>
+
+<p>握手阶段有三点需要注意。</p>
+
+<blockquote>
+  <p>（1）生成对话密钥一共需要三个随机数。</p>
+
+<p>（2）握手之后的对话使用"对话密钥"加密（对称加密），服务器的公钥和私钥只用于加密和解密"对话密钥"（非对称加密），无其他作用。</p>
+
+<p>（3）服务器公钥放在服务器的数字证书之中。</p>
+</blockquote>
+
+<p>从上面第二点可知，整个对话过程中（握手阶段和其后的对话），服务器的公钥和私钥只需要用到一次。这就是CloudFlare能够提供Keyless服务的根本原因。</p>
+
+<p>某些客户（比如银行）想要使用外部CDN，加快自家网站的访问速度，但是出于安全考虑，不能把私钥交给CDN服务商。这时，完全可以把私钥留在自家服务器，只用来解密对话密钥，其他步骤都让CDN服务商去完成。</p>
+
+<p><a href="/blogimg/asset/2014/bg2014092005.png"><img src="/blogimg/asset/2014/bg2014092006.png" alt="" title="" /></a></p>
+
+<p>上图中，银行的服务器只参与第四步，后面的对话都不再会用到私钥了。</p>
+
+<h2>三、DH算法的握手阶段</h2>
+
+<p>整个握手阶段都不加密（也没法加密），都是明文的。因此，如果有人窃听通信，他可以知道双方选择的加密方法，以及三个随机数中的两个。整个通话的安全，只取决于第三个随机数（Premaster secret）能不能被破解。</p>
+
+<p>虽然理论上，只要服务器的公钥足够长（比如2048位），那么Premaster secret可以保证不被破解。但是为了足够安全，我们可以考虑把握手阶段的算法从默认的<a href="http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html">RSA算法</a>，改为 <a href="http://zh.wikipedia.org/wiki/%E8%BF%AA%E8%8F%B2%EF%BC%8D%E8%B5%AB%E5%B0%94%E6%9B%BC%E5%AF%86%E9%92%A5%E4%BA%A4%E6%8D%A2">Diffie-Hellman算法</a>（简称DH算法）。</p>
+
+<p>采用DH算法后，Premaster secret不需要传递，双方只要交换各自的参数，就可以算出这个随机数。</p>
+
+<p><a href="/blogimg/asset/2014/bg2014092007.png"><img src="bg2014092008.png" alt="" title="" /></a></p>
+
+<p>上图中，第三步和第四步由传递Premaster secret变成了传递DH算法所需的参数，然后双方各自算出Premaster secret。这样就提高了安全性。</p>
+
+<h2>四、session的恢复</h2>
+
+<p>握手阶段用来建立SSL连接。如果出于某种原因，对话中断，就需要重新握手。</p>
+
+<p>这时有两种方法可以恢复原来的session：一种叫做session ID，另一种叫做session ticket。</p>
+
+<p>session ID的思想很简单，就是每一次对话都有一个编号（session ID）。如果对话中断，下次重连的时候，只要客户端给出这个编号，且服务器有这个编号的记录，双方就可以重新使用已有的"对话密钥"，而不必重新生成一把。</p>
+
+<p><a href="/blogimg/asset/2014/bg2014092009.png"><img src="bg2014092010.png" alt="" title="" /></a></p>
+
+<p>上图中，客户端给出session ID，服务器确认该编号存在，双方就不再进行握手阶段剩余的步骤，而直接用已有的对话密钥进行加密通信。</p>
+
+<p>session ID是目前所有浏览器都支持的方法，但是它的缺点在于session ID往往只保留在一台服务器上。所以，如果客户端的请求发到另一台服务器，就无法恢复对话。session ticket就是为了解决这个问题而诞生的，目前只有Firefox和Chrome浏览器支持。</p>
+
+<p><a href="/blogimg/asset/2014/bg2014092011.png"><img src="bg2014092012.png" alt="" title="" /></a></p>
+
+<p>上图中，客户端不再发送session ID，而是发送一个服务器在上一次对话中发送过来的session ticket。这个session ticket是加密的，只有服务器才能解密，其中包括本次对话的主要信息，比如对话密钥和加密方法。当服务器收到session ticket以后，解密后就不必重新生成对话密钥了。</p>
+
+<p>（完）</p>
+
+                                    <!-- /div -->
+
+                                </div>
+    <script type="text/javascript" src="/newwindow.js"></script>
+                                <div class="asset-footer">
+
+<h3>文档信息</h3>
+<ul>
+<li>版权声明：自由转载-非商用-非衍生-保持署名（<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh">创意共享3.0许可证</a>）</li>
+<li>发表日期： <abbr class="published" title="2014-09-20T18:33:54+08:00">2014年9月20日</abbr></li>
+
+</ul>
+                                </div>
+</article>
+                            </div>
+
+
+
+  <div style="display: inline-block ! important;width: 100%;">
+  
+  <p style="text-align:center;font-size: 16px;">
+    <a title="算法训练营体验课" target="_blank" href="https://u.geekbang.org/subject/prioralgorithm?gk_cus_user_wechat=university&utm_source=kolruanyifeng&utm_medium=1010&utm_term=kolruanyifeng1013">算法训练营体验课</a>
+    <br>
+    <a title="算法训练营体验课" href="https://u.geekbang.org/subject/prioralgorithm?gk_cus_user_wechat=university&utm_source=kolruanyifeng&utm_medium=1010&utm_term=kolruanyifeng1013" target="_blank"><img alt="算法训练营体验课" src="https://www.wangbase.com/blogimg/asset/202010/bg2020101303.jpg" style="border: 1px solid #666;display: block !important;width:100%;max-width:100%;" /></a>
+  </p>
+  
+  </div>
+
+
+
+<div id="related_entries">
+<h2>相关文章</h2>
+<ul>
+
+<li><strong>2020.08.26: <a href="http://www.ruanyifeng.com/blog/2020/08/rsync.html">rsync 用法教程</a></strong>
+
+                           <div class="entry-body">
+                              一、简介
+
+rsync 是一个常用的 Linux 应用程序，用于文件同步。
+
+                           </div>
+
+</li>
+
+ 
+<li><strong>2020.08.10: <a href="http://www.ruanyifeng.com/blog/2020/08/five-css-layouts-in-one-line.html">只要一行代码，实现五种 CSS 经典布局</a></strong>
+
+                           <div class="entry-body">
+                              页面布局是样式开发的第一步，也是 CSS 最重要的功能之一。
+
+                           </div>
+
+</li>
+
+ 
+<li><strong>2020.07.08: <a href="http://www.ruanyifeng.com/blog/2020/07/ssh-certificate.html">SSH 证书登录教程</a></strong>
+
+                           <div class="entry-body">
+                              SSH 是服务器登录工具，提供密码登录和密钥登录。
+
+                           </div>
+
+</li>
+
+ 
+<li><strong>2020.06.21: <a href="http://www.ruanyifeng.com/blog/2020/06/android-host-solutions.html">安卓手机系统连接电视，最好的方案是什么？</a></strong>
+
+                           <div class="entry-body">
+                              现在，大部分人都用手机看视频。但是手机屏幕太小，不适合高清视频。电视看视频，才有更好的体验。
+
+                           </div>
+
+</li>
+
+ 
+</ul>
+</div>
+
+
+
+                    
+
+                    <div id="comments" class="comments">
+
+
+    
+    
+        
+    <h2 class="comments-header">留言（61条）</h2>
+
+    <div id="comments-content" class="comments-content" style="clear: left;">
+        
+        <div id="comment-338814" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">瑞意</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-338814">
+            <p>阮兄，深入浅出的讲解，很好理解了</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September 20, 2014  6:58 PM">2014年9月20日 18:58</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-338814">#</a>
+ | <a href="#comment-text" title="引用瑞意的这条留言" onclick="return CommentQuote('comment-quote-338814','瑞意');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-338847" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">c</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-338847">
+            <p>我看了 CloudFlare 的说明（这里和这里）<br />
+两个这里是同一个链接</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September 21, 2014  4:31 PM">2014年9月21日 16:31</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-338847">#</a>
+ | <a href="#comment-text" title="引用c的这条留言" onclick="return CommentQuote('comment-quote-338847','c');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-338849" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">阮一峰</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-338849">
+            <p>@c：</p>
+
+<p>谢谢指出，已经改过来了。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September 21, 2014  6:53 PM">2014年9月21日 18:53</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-338849">#</a>
+ | <a href="#comment-text" title="引用阮一峰的这条留言" onclick="return CommentQuote('comment-quote-338849','阮一峰');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-338896" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://blog.xiangzhuyuan.com" href="http://blog.xiangzhuyuan.com" target="_blank" rel="nofollow">xzy</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-338896">
+            <blockquote>
+
+<p>session ID是目前所有浏览器都支持的方法，但是它的缺点在于session ID往往只保留在一台服务器上。所以，如果客户端的请求发到另一台服务器，就无法恢复对话。</p>
+
+</blockquote>
+
+<p>这段话比较牵强了,有不同方案的集群session保存方案.</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September 22, 2014 10:28 AM">2014年9月22日 10:28</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-338896">#</a>
+ | <a href="#comment-text" title="引用xzy的这条留言" onclick="return CommentQuote('comment-quote-338896','xzy');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-338973" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">qianqian</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-338973">
+            <p>个人理解，这应该算是CloudFlare产品创新，相当于他能提供一个PKI正常验证体系下的证书颁发机构，这个机构可以用来为开启KeyLess服务的站颁发证书</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September 22, 2014  3:13 PM">2014年9月22日 15:13</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-338973">#</a>
+ | <a href="#comment-text" title="引用qianqian的这条留言" onclick="return CommentQuote('comment-quote-338973','qianqian');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-338983" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">qalong</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-338983">
+            <blockquote>
+<pre>引用xzy的发言：</pre>
+
+<p></p>
+
+<p>这段话比较牵强了,有不同方案的集群session保存方案.</p>
+
+</blockquote>
+
+<p><br />
+同意，现在大型应用基本上都是集群环境，session很少保存在一台服务器上。很多都是用集中式session管理</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September 22, 2014  3:57 PM">2014年9月22日 15:57</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-338983">#</a>
+ | <a href="#comment-text" title="引用qalong的这条留言" onclick="return CommentQuote('comment-quote-338983','qalong');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-339051" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://weibo.com/linchen1987" href="http://weibo.com/linchen1987" target="_blank" rel="nofollow">林晨</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-339051">
+            <p>深入浅出，受教。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September 23, 2014  9:17 AM">2014年9月23日 09:17</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-339051">#</a>
+ | <a href="#comment-text" title="引用林晨的这条留言" onclick="return CommentQuote('comment-quote-339051','林晨');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-339061" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://zjhiphop.github.io" href="http://zjhiphop.github.io" target="_blank" rel="nofollow">zjhiphop</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-339061">
+            <p>阮哥的每篇文章都是必看的！！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September 23, 2014 10:28 AM">2014年9月23日 10:28</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-339061">#</a>
+ | <a href="#comment-text" title="引用zjhiphop的这条留言" onclick="return CommentQuote('comment-quote-339061','zjhiphop');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-339067" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://weibo.com/ciciywg" href="http://weibo.com/ciciywg" target="_blank" rel="nofollow">ciciywg</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-339067">
+            <p>安全系列的科普文章写的真是不错，图文并茂，深入浅出，赞！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September 23, 2014 10:39 AM">2014年9月23日 10:39</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-339067">#</a>
+ | <a href="#comment-text" title="引用ciciywg的这条留言" onclick="return CommentQuote('comment-quote-339067','ciciywg');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-339127" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://www.hilyb.com" href="http://www.hilyb.com" target="_blank" rel="nofollow">hilyb</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-339127">
+            <p>不错的文章。感觉使用SSL好烦人，证书生成什么的烦死了。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September 23, 2014  5:34 PM">2014年9月23日 17:34</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-339127">#</a>
+ | <a href="#comment-text" title="引用hilyb的这条留言" onclick="return CommentQuote('comment-quote-339127','hilyb');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-339442" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">xiongxiong</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-339442">
+            <blockquote>
+<pre>引用qianqian的发言：</pre>
+
+<p>个人理解，这应该算是CloudFlare产品创新，相当于他能提供一个PKI正常验证体系下的证书颁发机构，这个机构可以用来为开启KeyLess服务的站颁发证书</p>
+
+</blockquote>
+
+<p>恩，我也想知道cloudflare怎么解决证书的网站签名问题。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September 25, 2014 10:07 AM">2014年9月25日 10:07</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-339442">#</a>
+ | <a href="#comment-text" title="引用xiongxiong的这条留言" onclick="return CommentQuote('comment-quote-339442','xiongxiong');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-339661" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">铜矿</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-339661">
+            <p>阮兄的页面对手机浏览器支持不太好,现在很多人会用手机阅读,建议针对移动浏览器做一些优化</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September 26, 2014  3:26 PM">2014年9月26日 15:26</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-339661">#</a>
+ | <a href="#comment-text" title="引用铜矿的这条留言" onclick="return CommentQuote('comment-quote-339661','铜矿');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-340832" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">爱国者</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-340832">
+            <p>DH算法虽然无需从客户端发送pre-master key, 但server DH参数和client DH参数应该是明文发送的吧，加上前面两个随机数也是明文发送的，那第三者完全能通过抓包的办法拿到server DH，client DH以及前两个随机数，然后自己生成会话密钥。这样后续的加密通信岂不是不安全？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="October  7, 2014 11:25 AM">2014年10月 7日 11:25</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-340832">#</a>
+ | <a href="#comment-text" title="引用爱国者的这条留言" onclick="return CommentQuote('comment-quote-340832','爱国者');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-341360" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="https://www.ssl.so" href="https://www.ssl.so" target="_blank" rel="nofollow">xoxo</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-341360">
+            <blockquote>
+<pre>引用xzy的发言：</pre>
+
+<p></p>
+
+<p>这段话比较牵强了,有不同方案的集群session保存方案.</p>
+
+</blockquote>
+
+<p>HTTPS服务器的底层SESSION内存 很难集群。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="October 13, 2014  2:18 PM">2014年10月13日 14:18</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-341360">#</a>
+ | <a href="#comment-text" title="引用xoxo的这条留言" onclick="return CommentQuote('comment-quote-341360','xoxo');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-341967" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">杨历</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-341967">
+            <blockquote>
+<pre>引用xzy的发言：</pre>
+
+<p></p>
+
+<p>这段话比较牵强了,有不同方案的集群session保存方案.</p>
+
+</blockquote>
+
+<p>作者说的是rfc5077，是传输层TLS通信的Session。不是应用层HTTP的Session。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="October 22, 2014  9:23 PM">2014年10月22日 21:23</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-341967">#</a>
+ | <a href="#comment-text" title="引用杨历的这条留言" onclick="return CommentQuote('comment-quote-341967','杨历');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-342478" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">小胜</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-342478">
+            <blockquote>
+<pre>引用爱国者的发言：</pre>
+
+<p>DH算法虽然无需从客户端发送pre-master key, 但server DH参数和client DH参数应该是明文发送的吧，加上前面两个随机数也是明文发送的，那第三者完全能通过抓包的办法拿到server DH，client DH以及前两个随机数，然后自己生成会话密钥。这样后续的加密通信岂不是不安全？</p>
+
+</blockquote>
+
+<p>这里DH算法有说，有限域内计算离散对数是几乎不可能的任务；得到这些参数是比较难算出密钥的；另外，我觉得这篇文章只说明了SSL协议使用DH算法的情况吧，在试用RSA等其他算法的时候，是不是不用再生成密钥对？服务器直接把公钥传给客户端就直接传输数据了？求解惑！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November  2, 2014  3:17 PM">2014年11月 2日 15:17</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-342478">#</a>
+ | <a href="#comment-text" title="引用小胜的这条留言" onclick="return CommentQuote('comment-quote-342478','小胜');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-345219" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://pimgeek.github.io" href="http://pimgeek.github.io" target="_blank" rel="nofollow">pimgeek</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-345219">
+            <blockquote>
+<pre>引用爱国者的发言：</pre>
+
+<p>DH算法虽然无需从客户端发送pre-master key, 但server DH参数和client DH参数应该是明文发送的吧，加上前面两个随机数也是明文发送的，那第三者完全能通过抓包的办法拿到server DH，client DH以及前两个随机数，然后自己生成会话密钥。这样后续的加密通信岂不是不安全？</p>
+
+</blockquote>
+
+<p>我也有同样的困惑。后面小胜的回答，虽然听起来很专业，信度很高，但是他没有因循作者的讲解思路。</p>
+
+<p>作者阮一峰的讲解思路是说采用 DH 算法，可以绕开Premaster secret被强行破解的风险：</p>
+
+<blockquote>
+虽然理论上，只要服务器的公钥足够长（比如2048位），那么Premaster secret可以保证不被破解。但是为了足够安全，………… 可以采用 DH 算法
+</blockquote>
+
+<p>而小胜的回答思路是：是说采用 DH 算法，在理论上也能保证Premaster secret不被破解，而且并没说明从理论上看【原始算法】和【DH算法】哪个更容易被强行破解。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 30, 2014 12:38 AM">2014年11月30日 00:38</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-345219">#</a>
+ | <a href="#comment-text" title="引用pimgeek的这条留言" onclick="return CommentQuote('comment-quote-345219','pimgeek');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-345767" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">贾岛</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-345767">
+            <blockquote>
+<pre>引用杨历的发言：</pre>
+
+<p></p>
+
+<p>作者说的是rfc5077，是传输层TLS通信的Session。不是应用层HTTP的Session。</p>
+
+</blockquote>
+
+<p>是的，session ticket是保存在客户端的，无需在服务端保存，因为session ticket就是对话密钥和加密方法经过加密后的信息。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December  5, 2014  4:46 PM">2014年12月 5日 16:46</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-345767">#</a>
+ | <a href="#comment-text" title="引用贾岛的这条留言" onclick="return CommentQuote('comment-quote-345767','贾岛');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-345944" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://zhuhaiqiao.com" href="http://zhuhaiqiao.com" target="_blank" rel="nofollow">不经夸</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-345944">
+            <blockquote>
+<pre>引用qalong的发言：</pre>
+
+<p></p>
+
+<p><br />
+同意，现在大型应用基本上都是集群环境，session很少保存在一台服务器上。很多都是用集中式session管理</p>
+
+</blockquote>
+
+<p><br />
+是分布式缓存吧   加上session容易丢失   使用分布式缓存是非常好的  也解决了只能在一台机子上的问题<br />
+</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December  8, 2014 10:55 AM">2014年12月 8日 10:55</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-345944">#</a>
+ | <a href="#comment-text" title="引用不经夸的这条留言" onclick="return CommentQuote('comment-quote-345944','不经夸');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-346294" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">ranger_ray</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-346294">
+            <blockquote>
+<pre>引用pimgeek的发言：</pre>
+
+<p></p>
+
+<p>而小胜的回答思路是：是说采用 DH 算法，在理论上也能保证Premaster secret不被破解，而且并没说明从理论上看【原始算法】和【DH算法】哪个更容易被强行破解。</p>
+
+</blockquote>
+
+<p>这是DH算法的一个简单描述：<br />
+1)   A随机产生一个大整数a，然后计算Ka=ga mod n。（a需要保密）<br />
+2)   B随机产生一个大整数b，然后计算Kb=gb mod n。（b需要保密）<br />
+3)   A把Ka发送给B,B把Kb发送给A<br />
+4)   A计算K=Kba mod n<br />
+5)   B计算K=Kab mod n<br />
+由于Kba mod n= （gb mod n）a mod n= （ga mod n）b mod n，因此可以保证双方得到的K是相同的，K即是共享的密钥。<br />
+意思是说client与server端都有一个随机数是不会通过网络传输的。所以保证了安全。<br />
+（所以感觉说明DH原理的那张图，不是很贴切，不知道自己理解对不）</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December 13, 2014 11:15 PM">2014年12月13日 23:15</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-346294">#</a>
+ | <a href="#comment-text" title="引用ranger_ray的这条留言" onclick="return CommentQuote('comment-quote-346294','ranger_ray');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-347056" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">aya</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-347056">
+            <p>如果服务器对客户端认证，而客户端不用对服务器认证，那么握手的过程应该什么样的呢？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January  8, 2015  1:20 PM">2015年1月 8日 13:20</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-347056">#</a>
+ | <a href="#comment-text" title="引用aya的这条留言" onclick="return CommentQuote('comment-quote-347056','aya');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-347471" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">WT</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-347471">
+            <p>真的好难啊，和以前的学的东西混在一起，彻底晕了！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January 24, 2015  2:32 PM">2015年1月24日 14:32</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-347471">#</a>
+ | <a href="#comment-text" title="引用WT的这条留言" onclick="return CommentQuote('comment-quote-347471','WT');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-349001" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://lalala~" href="http://lalala~" target="_blank" rel="nofollow">gg</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-349001">
+            <p>这几张图的确说明的超级详细容易理解~ DH那里原图没有具体说明不容易被破解的原因，现在实际使用起来配合其他工具的确保密性更高。话说，看完整篇文章，只看到SSL了，没看到TLS。。。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="April 10, 2015 10:00 AM">2015年4月10日 10:00</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-349001">#</a>
+ | <a href="#comment-text" title="引用gg的这条留言" onclick="return CommentQuote('comment-quote-349001','gg');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-349315" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">御剑飞星</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-349315">
+            <blockquote>
+<pre>引用gg的发言：</pre>
+
+<p>这几张图的确说明的超级详细容易理解~ DH那里原图没有具体说明不容易被破解的原因，现在实际使用起来配合其他工具的确保密性更高。话说，看完整篇文章，只看到SSL了，没看到TLS。。。</p>
+
+</blockquote>
+
+<p>TLS就是SSL的升级版，原理都一样的</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="April 29, 2015  6:31 PM">2015年4月29日 18:31</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-349315">#</a>
+ | <a href="#comment-text" title="引用御剑飞星的这条留言" onclick="return CommentQuote('comment-quote-349315','御剑飞星');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-350936" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">鬼知道</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-350936">
+            <p>我想知道，既然是用DH作为共享密钥的生成和交换DH所需的随机函数，那为什么还需要第一和第二阶段的随机函数呢？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 20, 2015 11:01 PM">2015年7月20日 23:01</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-350936">#</a>
+ | <a href="#comment-text" title="引用鬼知道的这条留言" onclick="return CommentQuote('comment-quote-350936','鬼知道');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-351255" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Edem</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-351255">
+            <p>ssl的流程写的很清楚 赞一个</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="August 14, 2015 12:55 PM">2015年8月14日 12:55</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-351255">#</a>
+ | <a href="#comment-text" title="引用Edem的这条留言" onclick="return CommentQuote('comment-quote-351255','Edem');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-351633" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="https://blog.helong.info/" href="https://blog.helong.info/" target="_blank" rel="nofollow">byronhe</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-351633">
+            <p><a href="https://blog.helong.info/blog/2015/09/06/tls-protocol-analysis-and-crypto-protocol-design/" rel="nofollow">https://blog.helong.info/blog/2015/09/06/tls-protocol-analysis-and-crypto-protocol-design/</a></p>
+
+<p>供参考<br />
+</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September  9, 2015  6:27 PM">2015年9月 9日 18:27</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-351633">#</a>
+ | <a href="#comment-text" title="引用byronhe的这条留言" onclick="return CommentQuote('comment-quote-351633','byronhe');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-353485" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">mk</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-353485">
+            <blockquote>
+<pre>引用爱国者的发言：</pre>
+
+<p>DH算法虽然无需从客户端发送pre-master key, 但server DH参数和client DH参数应该是明文发送的吧，加上前面两个随机数也是明文发送的，那第三者完全能通过抓包的办法拿到server DH，client DH以及前两个随机数，然后自己生成会话密钥。这样后续的加密通信岂不是不安全？</p>
+
+</blockquote>
+
+<p>CA的作用之一是来确保server的合法性 如果仅仅使用DH无法确保server的合法性，另外依旧存在被中间人攻击的可能性</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December 23, 2015  8:23 PM">2015年12月23日 20:23</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-353485">#</a>
+ | <a href="#comment-text" title="引用mk的这条留言" onclick="return CommentQuote('comment-quote-353485','mk');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-353726" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">bobjiao</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-353726">
+            <blockquote>
+<pre>引用爱国者的发言：</pre>
+
+<p>DH算法虽然无需从客户端发送pre-master key, 但server DH参数和client DH参数应该是明文发送的吧，加上前面两个随机数也是明文发送的，那第三者完全能通过抓包的办法拿到server DH，client DH以及前两个随机数，然后自己生成会话密钥。这样后续的加密通信岂不是不安全？</p>
+
+</blockquote>
+
+<p>其实我也有同问,查了DH算法明白了.其实DH还是有自己的密钥,这个密钥由于计算离散对数是十分困难的,所以第三方很难破解或者说现今是不可能的.</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January  4, 2016  1:36 PM">2016年1月 4日 13:36</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-353726">#</a>
+ | <a href="#comment-text" title="引用bobjiao的这条留言" onclick="return CommentQuote('comment-quote-353726','bobjiao');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-355651" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://blog.csdn.net/load2006" href="http://blog.csdn.net/load2006" target="_blank" rel="nofollow">load</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-355651">
+            <blockquote>
+<pre>引用xzy的发言：</pre>
+
+<p>这段话比较牵强了,有不同方案的集群session保存方案.</p>
+
+</blockquote>
+
+<p>有大厂就是这种方案，需要proxy server去一个共享存储里面读取</p>
+
+<p>还有几个请问下，就是如何跟源站之间协商session key，<br />
+源站的web server也需要做相应改造吧<br />
+cloudflare的做法是否已经被ssl的rfc文档接受？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="April 14, 2016 11:50 AM">2016年4月14日 11:50</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-355651">#</a>
+ | <a href="#comment-text" title="引用load的这条留言" onclick="return CommentQuote('comment-quote-355651','load');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-358129" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://blog.smoker.cc" href="http://blog.smoker.cc" target="_blank" rel="nofollow">字节流</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-358129">
+            <p>第三节DH算法的握手阶段的配图，Visitor 是通过两个随机数生成的 session key，而 CloudFlare 是通过两个随机数和 Premaster secret 生成的 session key, 这两个 session key 不应该是相等的吗？不太理解，求指教。谢谢<br />
+</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="June 14, 2016  1:05 AM">2016年6月14日 01:05</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-358129">#</a>
+ | <a href="#comment-text" title="引用字节流的这条留言" onclick="return CommentQuote('comment-quote-358129','字节流');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360536" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://xgqfrms.xyz" href="http://xgqfrms.xyz" target="_blank" rel="nofollow">xgqfrms</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360536">
+            <p>Defined<br />
+Protocol	Year<br />
+SSL 1.0	n/a<br />
+SSL 2.0	1995<br />
+SSL 3.0	1996<br />
+TLS 1.0	1999<br />
+TLS 1.1	2006<br />
+TLS 1.2	2008<br />
+TLS 1.3	TBD</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 11, 2016 10:55 PM">2016年7月11日 22:55</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-360536">#</a>
+ | <a href="#comment-text" title="引用xgqfrms的这条留言" onclick="return CommentQuote('comment-quote-360536','xgqfrms');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-363981" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">别扭的键盘</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-363981">
+            <p>敢问那个图片是用什么软件生成的</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September  7, 2016  6:15 PM">2016年9月 7日 18:15</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-363981">#</a>
+ | <a href="#comment-text" title="引用别扭的键盘的这条留言" onclick="return CommentQuote('comment-quote-363981','别扭的键盘');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-366504" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">董光金</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-366504">
+            <p>写的很好，很美！大赞一个</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="October 17, 2016  5:29 PM">2016年10月17日 17:29</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-366504">#</a>
+ | <a href="#comment-text" title="引用董光金的这条留言" onclick="return CommentQuote('comment-quote-366504','董光金');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-367657" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">mactec</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-367657">
+            <p>阮老师</p>
+
+<p>DH算法实际在TLS/SSL部署中并没有RSA可靠，原因在于RSA的主要风险在于服务器私钥丢失后的第三方监听攻击<br />
+而DH算法本身有缺陷，中间人攻击更为常见，导致其实更为少用</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November  3, 2016 11:25 AM">2016年11月 3日 11:25</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-367657">#</a>
+ | <a href="#comment-text" title="引用mactec的这条留言" onclick="return CommentQuote('comment-quote-367657','mactec');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-367673" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">pure</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-367673">
+            <p>大图不知道是挂了还是要VPN啊</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November  3, 2016  2:34 PM">2016年11月 3日 14:34</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-367673">#</a>
+ | <a href="#comment-text" title="引用pure的这条留言" onclick="return CommentQuote('comment-quote-367673','pure');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-369368" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">振宇</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-369368">
+            <blockquote>
+<pre>引用mactec的发言：</pre>
+
+<p>阮老师</p>
+
+<p>DH算法实际在TLS/SSL部署中并没有RSA可靠，原因在于RSA的主要风险在于服务器私钥丢失后的第三方监听攻击<br />
+而DH算法本身有缺陷，中间人攻击更为常见，导致其实更为少用</p>
+
+</blockquote>
+
+<p>朋友我对你的说法稍有异议，Server端的私钥丢失这个属于很大的故障了吧？ 我认为RSA算法的缺陷就是无法证明共匙被替换后，导致的中间人攻击问题。而DH算法本身也是无法避免中间人攻击问题的，所以在上面的实例图中，阮老师加入了数字证书的逻辑。无论是RSA还是DH都需要客户端通过CA的公共钥匙解析到数字证书中存在的server端公钥（rsa），说明一下这边DH算法传递的公共数据我们也可当公钥来看（理解方便）。</p>
+
+<p>另外想请教一下层主，为什么DH更容易被中间人攻击？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 28, 2016  3:52 PM">2016年11月28日 15:52</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-369368">#</a>
+ | <a href="#comment-text" title="引用振宇的这条留言" onclick="return CommentQuote('comment-quote-369368','振宇');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-371980" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">郭力勉</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-371980">
+            <blockquote>
+<pre>引用爱国者的发言：</pre>
+
+<p>DH算法虽然无需从客户端发送pre-master key, 但server DH参数和client DH参数应该是明文发送的吧，加上前面两个随机数也是明文发送的，那第三者完全能通过抓包的办法拿到server DH，client DH以及前两个随机数，然后自己生成会话密钥。这样后续的加密通信岂不是不安全？</p>
+
+</blockquote>
+
+<p>DH算法本来就是轻易中间人攻击的，所以在SSL的基础上DH算法，可以保证没有中间人啊</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January 13, 2017  9:01 AM">2017年1月13日 09:01</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-371980">#</a>
+ | <a href="#comment-text" title="引用郭力勉的这条留言" onclick="return CommentQuote('comment-quote-371980','郭力勉');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-374980" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">健锋</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-374980">
+            <p>整个握手阶段都不加密（也没法加密），都是明文的。因此，如果有人窃听通信，他可以知道双方选择的加密方法，以及三个随机数中的两个。整个通话的安全，只取决于第三个随机数（Premaster secret）能不能被破解。<br />
+窃听的能否自己伪造成客户端，提取证书中的公钥，做后续的操作呢</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="March 17, 2017  6:31 PM">2017年3月17日 18:31</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-374980">#</a>
+ | <a href="#comment-text" title="引用健锋的这条留言" onclick="return CommentQuote('comment-quote-374980','健锋');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-375211" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">netlibo</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-375211">
+            <blockquote>
+<pre>引用qalong的发言：</pre>
+
+<p>同意，现在大型应用基本上都是集群环境，session很少保存在一台服务器上。很多都是用集中式session管理</p>
+
+</blockquote>
+
+<p>有没有考虑过集中session管理也是另一个单点故障的源头？再做一层集群？<br />
+纯讨论，其实，没有最好，只有最适合。<br />
+另外，token模式在动态扩容方面还是有点优势的。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="March 21, 2017  2:16 PM">2017年3月21日 14:16</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-375211">#</a>
+ | <a href="#comment-text" title="引用netlibo的这条留言" onclick="return CommentQuote('comment-quote-375211','netlibo');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-375233" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">葛新</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-375233">
+            <blockquote>
+<pre>引用xoxo的发言：</pre>
+
+<p></p>
+
+<p>HTTPS服务器的底层SESSION内存 很难集群。</p>
+
+</blockquote>
+
+<p>这里的session应该是操作系统实现的吧，属于SSL协议部分了，并不是应用级的session</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="March 21, 2017  9:57 PM">2017年3月21日 21:57</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-375233">#</a>
+ | <a href="#comment-text" title="引用葛新的这条留言" onclick="return CommentQuote('comment-quote-375233','葛新');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-375234" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">葛新</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-375234">
+            <p>有一些问题想请教作者。<br />
+我们知道浏览器在访问一个站点的时候，会同时建立多个TCP连接去下载资源，那是不是同一个浏览器每个TCP连接都需要与服务器端握手交换密钥然后在传输数据，还是只进行一次密钥交换，然后所有TCP连接共享</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="March 21, 2017 10:03 PM">2017年3月21日 22:03</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-375234">#</a>
+ | <a href="#comment-text" title="引用葛新的这条留言" onclick="return CommentQuote('comment-quote-375234','葛新');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-376375" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Frank</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-376375">
+            <p>session key服务端生成了怎么传给客户端呢？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="April 17, 2017 10:52 AM">2017年4月17日 10:52</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-376375">#</a>
+ | <a href="#comment-text" title="引用Frank的这条留言" onclick="return CommentQuote('comment-quote-376375','Frank');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-376475" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">hytrix</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-376475">
+            <p>第三个随机数是对称密钥的话，那前面两个随机数什么作用？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="April 21, 2017  1:32 AM">2017年4月21日 01:32</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-376475">#</a>
+ | <a href="#comment-text" title="引用hytrix的这条留言" onclick="return CommentQuote('comment-quote-376475','hytrix');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-376705" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Garen</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-376705">
+            <blockquote>
+<pre>引用hytrix的发言：</pre>
+
+<p>第三个随机数是对称密钥的话，那前面两个随机数什么作用？</p>
+
+</blockquote>
+
+<p>是为了确认双方支持安全协议形式，和客户端来访的安全性吧</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="April 26, 2017  7:11 PM">2017年4月26日 19:11</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-376705">#</a>
+ | <a href="#comment-text" title="引用Garen的这条留言" onclick="return CommentQuote('comment-quote-376705','Garen');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-377059" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">member</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-377059">
+            <p>大家看一下DH加密部分，ServerDH参数是使用了私钥加密了(还是签名？)之后再传递到客户端的，客户端用公钥解密后，生成ClientDH参数，此时随机数已经包含在ClientDH 参数中，服务器收到ClientDH，结合ServerDH，析构出随机数。<br />
+然后开始正常的加密通讯。</p>
+
+<p>但是图中并没有说明 Private Key 在哪里，因为私钥不可能存放在CloudFlare，肯定是存放在自己主机上，那么这图就少一个与主机通信的环节，</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="May 11, 2017  2:56 PM">2017年5月11日 14:56</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-377059">#</a>
+ | <a href="#comment-text" title="引用member的这条留言" onclick="return CommentQuote('comment-quote-377059','member');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-377942" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://没有诶" href="http://没有诶" target="_blank" rel="nofollow">***</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-377942">
+            <p>一峰同志真的很优秀！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="June 14, 2017  9:24 AM">2017年6月14日 09:24</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-377942">#</a>
+ | <a href="#comment-text" title="引用***的这条留言" onclick="return CommentQuote('comment-quote-377942','***');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-379523" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">涂有</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-379523">
+            <p>请问你用的画图软件是什么？挺好看的</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="August 14, 2017  6:15 PM">2017年8月14日 18:15</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-379523">#</a>
+ | <a href="#comment-text" title="引用涂有的这条留言" onclick="return CommentQuote('comment-quote-379523','涂有');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-381009" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Robin</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-381009">
+            <p>您说道：服务器的公钥和私钥只用于加密和解密"对话密钥"（非对称加密），无其他作用。<br />
+这里的对话秘钥就是sessionkey吧，既然客户端和服务端都有sessionkey，不传这个sessionkey就好了啊，为什么要加密sessionkey呢？<br />
+</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September 29, 2017  7:05 PM">2017年9月29日 19:05</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-381009">#</a>
+ | <a href="#comment-text" title="引用Robin的这条留言" onclick="return CommentQuote('comment-quote-381009','Robin');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-384870" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://langlv.me" href="http://langlv.me" target="_blank" rel="nofollow">Victor Lv</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-384870">
+            <p>深入浅出，写的很棒！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January 22, 2018  4:36 PM">2018年1月22日 16:36</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-384870">#</a>
+ | <a href="#comment-text" title="引用Victor Lv的这条留言" onclick="return CommentQuote('comment-quote-384870','Victor Lv');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-385022" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">steam</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-385022">
+            <p>premaster secret 是怎么生成的？没太看懂，感觉是凭空出来的</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January 26, 2018  3:11 AM">2018年1月26日 03:11</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-385022">#</a>
+ | <a href="#comment-text" title="引用steam的这条留言" onclick="return CommentQuote('comment-quote-385022','steam');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-385023" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">steam</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-385023">
+            <p>还有一个问题，既然 client random 和 server random 都是明文传输的，那么就是说这两个数是可以被中间人获取的，那这两个随机数又有什么意义呢？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January 26, 2018  3:18 AM">2018年1月26日 03:18</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-385023">#</a>
+ | <a href="#comment-text" title="引用steam的这条留言" onclick="return CommentQuote('comment-quote-385023','steam');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-385872" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">sua7</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-385872">
+            <p>受教受教 打算把文章从头看起 谢谢！ 希望多出点这样的安全系列文章！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="February 23, 2018  6:21 PM">2018年2月23日 18:21</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-385872">#</a>
+ | <a href="#comment-text" title="引用sua7的这条留言" onclick="return CommentQuote('comment-quote-385872','sua7');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-386747" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">hhuua</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-386747">
+            <blockquote>
+<pre>引用steam的发言：</pre>
+
+<p>还有一个问题，既然 client random 和 server random 都是明文传输的，那么就是说这两个数是可以被中间人获取的，那这两个随机数又有什么意义呢？</p>
+
+</blockquote>
+
+<p>在他的另一篇文章里有说:"pre master的存在在于SSL协议不信任每个主机都能产生完全随机的随机数，如果随机数不随机，那么pre master secret就有可能被猜出来，那么仅适用pre master secret作为密钥就不合适了，因此必须引入新的随机因素，那么客户端和服务器加上pre master secret三个随机数一同生成的密钥就不容易被猜出了，一个伪随机可能完全不随机，可是是三个伪随机就十分接近随机了，每增加一个自由度，随机性增加的可不是一。"</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="March 16, 2018  4:08 PM">2018年3月16日 16:08</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-386747">#</a>
+ | <a href="#comment-text" title="引用hhuua的这条留言" onclick="return CommentQuote('comment-quote-386747','hhuua');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-388442" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">BING</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-388442">
+            <blockquote>
+<pre>引用steam的发言：</pre>
+
+<p>还有一个问题，既然 client random 和 server random 都是明文传输的，那么就是说这两个数是可以被中间人获取的，那这两个随机数又有什么意义呢？</p>
+
+</blockquote>
+
+<p>client不信任server是否是真的随机数，所以client自己提供一个随机数；同时server也不信任client是否有真的随机数，所以server自己也提供一个随机数。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="May  2, 2018  1:46 PM">2018年5月 2日 13:46</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-388442">#</a>
+ | <a href="#comment-text" title="引用BING的这条留言" onclick="return CommentQuote('comment-quote-388442','BING');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-390299" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">steam</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-390299">
+            <blockquote>
+<pre>引用BING的发言：</pre>
+
+<p>client不信任server是否是真的随机数，所以client自己提供一个随机数；同时server也不信任client是否有真的随机数，所以server自己也提供一个随机数。</p>
+
+</blockquote>
+
+<p>赞！这个解释非常有说服力！</p>
+
+<p>能麻烦再解释下 premaster secret 是怎么生成的吗？就是客户端根据 RSA 算法，自己随机生成的吗？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="June 27, 2018  9:10 PM">2018年6月27日 21:10</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-390299">#</a>
+ | <a href="#comment-text" title="引用steam的这条留言" onclick="return CommentQuote('comment-quote-390299','steam');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-390755" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">maosi</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-390755">
+            <blockquote>
+<pre>引用steam的发言：</pre>
+
+<p></p>
+
+<p>赞！这个解释非常有说服力！</p>
+
+<p>能麻烦再解释下 premaster secret 是怎么生成的吗？就是客户端根据 RSA 算法，自己随机生成的吗？</p>
+
+</blockquote>
+
+<p>可以参考下面链接中的"随机密码串"部分<br />
+<a href="http://blog.jobbole.com/48369" rel="nofollow">http://blog.jobbole.com/48369</a><br />
+</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 10, 2018  2:25 PM">2018年7月10日 14:25</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-390755">#</a>
+ | <a href="#comment-text" title="引用maosi的这条留言" onclick="return CommentQuote('comment-quote-390755','maosi');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-391696" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">8090</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-391696">
+            <p>@爱国者：</p>
+
+<p>我也有同样的疑惑，请问您解决了吗？<br />
+</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="August  1, 2018  4:13 PM">2018年8月 1日 16:13</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-391696">#</a>
+ | <a href="#comment-text" title="引用8090的这条留言" onclick="return CommentQuote('comment-quote-391696','8090');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-405359" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://zx1986.github.io" href="http://zx1986.github.io" target="_blank" rel="nofollow">張旭</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-405359">
+            <p>太精彩了！<br />
+非常喜歡讀您的文章！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January 19, 2019 12:55 PM">2019年1月19日 12:55</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-405359">#</a>
+ | <a href="#comment-text" title="引用張旭的这条留言" onclick="return CommentQuote('comment-quote-405359','張旭');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-417821" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">pluto</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-417821">
+            <p>第一步，爱丽丝给出协议版本号、一个客户端生成的随机数（Client random），以及客户端支持的加密方法。<br />
+第二步，鲍勃确认双方使用的加密方法，并给出数字证书、以及一个服务器生成的随机数（Server random）。</p>
+
+<p>--前两步如果是http的话，两个随机数会直接暴露，还有什么作用呢？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="April 18, 2020  8:42 PM">2020年4月18日 20:42</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-417821">#</a>
+ | <a href="#comment-text" title="引用pluto的这条留言" onclick="return CommentQuote('comment-quote-417821','pluto');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-419372" class="comment">
+    <div id="comment-last" class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">nick</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-419372">
+            <p>网站模板可以给我一份吗我也想要这样的，现在用wordpress</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="June 15, 2020 11:01 PM">2020年6月15日 23:01</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html#comment-419372">#</a>
+ | <a href="#comment-text" title="引用nick的这条留言" onclick="return CommentQuote('comment-quote-419372','nick');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    </div>
+        
+    
+
+
+    
+    
+    <div class="comments-open" id="comments-open">
+        <h2 class="comments-open-header">我要发表看法</h2>
+        <div class="comments-open-content">
+
+        
+            <div id="comment-greeting"></div>
+
+            <form method="post" action="http://www.ruanyifeng.com/cgi-bin/mtos/mt-comments.cgi" name="comments_form" id="comments-form" onsubmit="return pleaseWait();">
+                <input type="hidden" name="static" value="1" />
+                <input type="hidden" name="entry_id" value="1813" />
+                <input type="hidden" name="__lang" value="en" />
+                <input type="hidden" name="parent_id" value="" id="comment-parent-id" />
+                <input type="hidden" name="armor" value="1" />
+                <input type="hidden" name="preview" value="" />
+                <input type="hidden" name="sid" value="" />
+                <div id="comments-open-data">
+            <div id="comments-open-text">
+                    <p><label for="comment-text">您的留言
+                    （HTML标签部分可用）</label></p>
+                    <p><textarea id="comment-text" name="text" rows="10" cols="50"></textarea></p>
+                </div>
+                    <div id="comment-form-name">
+                        <p><label for="comment-author">您的大名：</label></p>
+                        <p><input id="comment-author" name="author" size="30" value="" />  <span class="hint"> &laquo;-必填</span></p>
+                    </div>
+                    <div id="comment-form-email">
+                        <p><label for="comment-email">电子邮件：</label></p>
+                        <p><input id="comment-email" name="email" size="30" value="" />  <span class="hint"> &laquo;-必填，不公开</span></p>
+                    </div>
+                    <div id="comment-form-url">
+                        <p><label for="comment-url">个人网址：</label></p>
+                        <p><input id="comment-url" name="url" size="30" value="" />  <span class="hint"> &laquo;-我信任你，不会填写广告链接</span></p>
+                    </div>
+                    <div id="comment-form-remember-me">
+                        <p>
+                        <label for="comment-bake-cookie">记住个人信息？</label><input type="checkbox" id="comment-bake-cookie" name="bakecookie" onclick="!this.checked?forgetMe(document.comments_form):rememberMe(document.comments_form)" value="1" accesskey="r" /></p>
+                    </div>
+                </div>
+                    <div id="comment-form-reply" style="display:none">
+                    <input type="checkbox" id="comment-reply" name="comment_reply" value="" onclick="mtSetCommentParentID()" />
+                    <label for="comment-reply" id="comment-reply-label"></label>
+                </div>
+                <div id="comments-open-captcha"></div>
+                <div id="comments-open-footer">
+<div id="wait" style="display:none;">
+<p><strong>正在发表您的评论，请稍候</strong></p>
+<p>
+<input type="text" name="percent" size="3" style="font-family:Arial; color:black;text-align:center; border-width:medium; border-style:none;">           
+<input type="text" name="chart" size="46" style="font-family:Arial;font-weight:bolder; color:black; padding:0px; border-style:none;">
+</p>
+</div>
+
+                    <p><input type="submit" accesskey="s" name="post" id="comment-submit" value="发表" />  <span class="hint"> &laquo;- 点击按钮</span></p>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+
+    
+
+
+</div>
+
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        <script type="text/javascript" src="http://www.ruanyifeng.com/blog/js/prism.js"></script>
+        <script type="text/javascript" src="/blog/checker.js"></script> 
+            <div id="footer">
+<div id="footer-inner">
+  <div id="footer-content">
+
+      
+<!--
+      <section> 
+     </section>
+  <p><a title="Instagram" target="_blank" href="http://instagram.com/ruanyf">Instagram</a></p>
+       <p><a title="订阅" href="https://app.feedblitz.com/f/f.fbz?Sub=348868" target="_blank">邮件订阅</a></p>
+  
+       <h2>Feed</h2>
+       <p><a title="FeedBurner" href="http://feeds.feedburner.com/ruanyifeng" target="_blank">FeedBurner</a></p>
+       <p><a title="atom.xml" href="http://www.ruanyifeng.com/blog/atom.xml" target="_blank">atom.xml</a></p>
+     
+      <p>支付宝：<a title="支付宝" href="alipays://platformapi/startapp?appId=20000067&url=http%3A%2F%2Fwww.ruanyifeng.com%2Fblog" target="_blank">yifeng.ruan@gmail.com</a></p>
+-->
+
+     <section>
+<!--
+       <h2>授权方式</h2>
+       <p><a title="许可证" href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank">自由转载-非商用-非衍生-保持署名</a></p>
+       <h2>微信公号</h2>
+       <h2>社交帐号</h2>
+       <h2>联系方式</h2>
+     -->
+       <p><img src="https://www.wangbase.com/blogimg/asset/202001/bg2020013101.jpg" alt="微信扫描"></p>
+       <p>
+         <a title="微博" href="http://weibo.com/ruanyf" target="_blank">Weibo</a> | 
+         <a title="Twitter" target="_blank" href="https://twitter.com/ruanyf">Twitter</a> |
+         <a title="GitHub" target="_blank" href="https://github.com/ruanyf">GitHub</a>
+       </p>
+     
+     <p>Email: <a title="电子邮件" href="mailto:yifeng.ruan@gmail.com" target="_blank">yifeng.ruan@gmail.com</a></p>
+     </section>
+  
+  
+
+
+  </div>
+</div>
+</div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-46829782-1', 'ruanyifeng.com');
+  ga('send', 'pageview');
+
+</script>
+
+<script type="text/javascript" src="/blog/stats.js"></script>
+<script>
+var supportImg = document.querySelector('#support-img');
+
+if (supportImg && _hmt) {
+  _hmt.push(['_trackEvent', 'banner', 'load']);
+  supportImg.addEventListener('click', function () {
+    _hmt.push(['_trackEvent', 'banner', 'click']);
+  }, false);
+}
+
+var homepageImg = document.querySelector('#homepage_sponsor');
+if (homepageImg && _hmt) {
+  _hmt.push(['_trackEvent', 'homepage-banner', 'load']);
+  homepageImg.addEventListener('click', function () {
+    _hmt.push(['_trackEvent', 'homepage-banner', 'click']);
+  }, false);
+}
+</script>
+
+
+<div id="share_button_proto" style="display:none;">
+<a class="bshareDiv" href="http://www.bshare.cn/share">分享按钮</a>
+
+
+
+<script type="text/javascript" charset="utf-8" src="http://static.bshare.cn/b/buttonLite.js#uuid=15e016b4-0028-44f1-a40d-a3c9d9c13c28&style=10&bgcolor=#fff&bp=weixin,qqim,qzone,qqmb,sinaminiblog,fanfou,xueqiu,douban,facebook,twitter,gplus,instapaper&ssc=false"></script>
+<script type="text/javascript" charset="utf-8">
+bShare.addEntry({
+    title: document.getElementById("page-title").innerHTML,
+url:window.location.href
+});
+</script>
+</div>
+
+<script>
+document.getElementById("share_button").innerHTML=document.getElementById("share_button_proto").innerHTML;
+</script>
+
+
+
+
+
+        </div>
+    </div>
+</body>
+</html>
