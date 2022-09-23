@@ -1,7 +1,8 @@
-来源：https://github.com/AngelPP52/How-To-Ask-Questions-The-Smart-Way?organization=AngelPP52&organization=AngelPP52
 
 
 # How To Ask Questions The Smart Way
+
+> 来源：https://github.com/AngelPP52/How-To-Ask-Questions-The-Smart-Way?organization=AngelPP52&organization=AngelPP52 
 
 提问前，先经过自己尝试找到答案。
 

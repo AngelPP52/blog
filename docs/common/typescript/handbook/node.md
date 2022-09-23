@@ -8,12 +8,12 @@
 - 枚举 enum
 
 ```js
-//枚举类型(TS)
+//枚举类型 (TS)
 enum Gender{
     GIRL = 0,
     BOY = 1
 }
-//枚举类型(JS转码后)
+//枚举类型 (JS 转码后)
 var Gender;
 (function (Gender) {
     Gender[Gender["GIRL"] = 0] = "GIRL";
@@ -164,8 +164,8 @@ class Person {
 - 参数装饰器，**可以通过劫持方法和参数达到改写方法参数的效果**
 
 ```js
-// 类似IOC，
-// 接收三个参数 target构造函数，methodName方法名，paramIndex参数索引
+// 类似 IOC，
+// 接收三个参数 target 构造函数，methodName 方法名，paramIndex 参数索引
 function addAge(target: any, methodName: string, paramIndex: number) {
   // todo
 }
@@ -312,7 +312,7 @@ class Child extends Father {
 function get<T extends Father>() {}
 get<Father>(); // √
 get<Child>(); // √
-get<GrandFather>(); // x，GrandFather没有father:string属性 只能是子类型
+get<GrandFather>(); // x，GrandFather 没有 father:string 属性 只能是子类型
 ```
 
 - 泛型约束，继承`联合类型`
@@ -322,7 +322,7 @@ interface Func{
     <T extends (number|string)>(a:T,b:T):void
 }
 let sum:Func = function<T extends (number|string)>(a:T,b:T):void
-sum<number>(1,1); // √，number是(number|string)的子类型 
+sum<number>(1,1); // √，number 是 (number|string) 的子类型 
 sum<number|string|boolean>(null,null);// ×，类型不兼容
 ```
 
@@ -387,11 +387,11 @@ let c2: Cart<string> = { list: ["0"] };
 
 - `for in` - 判断实例的属性
 
-- `null保护` - 对于联合类型`string|null`的对象，加 if 语句判断空值，ts 就可以判断此对象非空
+- `null 保护` - 对于联合类型`string|null`的对象，加 if 语句判断空值，ts 就可以判断此对象非空
 
 - **可辩别的联合类型** - ts 可以通过对象属性具体的值来判断类型；ts 可以通过**对象的属性是否存在（key in obj）**来判断类型
 
-- **自定义类型保护** - 利用 ts 类型谓词（parameterName is Type）语法,
+- **自定义类型保护** - 利用 ts 类型谓词（parameterName is Type）语法，
   
   ```js
   interface Bird{
@@ -408,23 +408,23 @@ let c2: Cart<string> = { list: ["0"] };
   }
   ```
   
-- `unknown` - 是any的安全类型，**可以对unknown类型的对象进行任意赋值**，但与any不同的是，unknown类型的对象不能调用未知的方法或属性（除非你已经赋过值并且可以明确知道具体的类型）
+- `unknown` - 是 any 的安全类型，**可以对 unknown 类型的对象进行任意赋值**，但与 any 不同的是，unknown 类型的对象不能调用未知的方法或属性（除非你已经赋过值并且可以明确知道具体的类型）
 
-- **联合类型的unknown** - 最后都是unknown
+- **联合类型的 unknown** - 最后都是 unknown
 
-- **交叉类型的unknown** - 最后都是另外一个类型
+- **交叉类型的 unknown** - 最后都是另外一个类型
 
 - **交叉类型**（子类型）。接口类型&接口类型等于他们的共同孩子；联合类型&联合类型等于他们的共同类型
 
-- **never是unknown的子类型**
+- **never 是 unknown 的子类型**
 
 - **映射属性** - `interface getType<T> = {[P in keyof T]: number}`
 
-- `keyof unknown 等于never`
+- `keyof unknown 等于 never`
 
 ## 类型变换
 
-- **从右向左** - `变量的类型`可以由定义推断，`let foo = 1; // foo就是number类型`
+- **从右向左** - `变量的类型`可以由定义推断，`let foo = 1; // foo 就是 number 类型`
 
 - **底部流出** -` 返回值的类型`可以由`return`语句推断
 
@@ -434,38 +434,38 @@ let c2: Cart<string> = { list: ["0"] };
 
 - **解构** - 推断规则同样适用
 
-- **？可选的类型** - `interface{name?: string} // name就是联合类型string|undefined`
+- **？可选的类型** - `interface{name?: string} // name 就是联合类型 string|undefined`
 
-- **小心使用返回值类型** - 如果函数的返回值很复杂（比如调用了另外一个函数，它的返回值是any），返回值类型就不是很确定了
+- **小心使用返回值类型** - 如果函数的返回值很复杂（比如调用了另外一个函数，它的返回值是 any），返回值类型就不是很确定了
 
 - **交叉类型** - 是`他们的子类型`。对于接口&接口而言，交叉类型就是他们的所有属性之和；对于联合类型而言，交叉类型就是他们的相同类型
 
 - **typeof** - 获取一个变量的类型
 
-- **索引访问操作符** - 获取一个类型的子类型。`interface Persoon{age: number}; // Person['age']的类型就是number`
+- **索引访问操作符** - 获取一个类型的子类型。`interface Persoon{age: number}; // Person['age'] 的类型就是 number`
 
 - **keyof** - 索引类型查询操作符，返回类型的所有属性名
 
 - **映射类型** - 例如将一个接口中的属性都变成可选的，`type Part<T> = {[key in keyof T]?: T[key]}`
 
 - **条件类型** - `type Condition<T, R> = T extends R ? T : R` 
-  - 条件类型的分发，**T如果是R的孩子，就返回T，如果不是就返回R**
-  - 分布式有条件类型，**待检查的类型必须是一个裸类型**，如[T],R[]...都不合法
-  - 联合类型的条件类型分发，`T extends U ? never : T; // 找出T中不包含U的部分`，`T extends U ? T : nerver; // 找出T中包含U的部分`
-  - `Extract` - 找出T中包含U的**共同部分**，`T extends U ? T : nerver;`
-  - `Exclude` - 找出T中不包含U的**差异部分**，`T extends U ? never : T;`
+  - 条件类型的分发，**T 如果是 R 的孩子，就返回 T，如果不是就返回 R**
+  - 分布式有条件类型，**待检查的类型必须是一个裸类型**，如 [T],R[]...都不合法
+  - 联合类型的条件类型分发，`T extends U ? never : T; // 找出 T 中不包含 U 的部分`，`T extends U ? T : nerver; // 找出 T 中包含 U 的部分`
+  - `Extract` - 找出 T 中包含 U 的**共同部分**，`T extends U ? T : nerver;`
+  - `Exclude` - 找出 T 中不包含 U 的**差异部分**，`T extends U ? never : T;`
   
-- **infer** - ts自带根据infer的位置来推断具体的类型
+- **infer** - ts 自带根据 infer 的位置来推断具体的类型
   
   - 推断函数返回值类型
   - 推断函数参数类型
   - 推断类构造函数返回值类型
   - 推断类构造函数参数类型
   - 推断类型属性的子类型，`T extends {name:infer A} ? A : never`
-  - 将tuple转union，`T extends Array<infer E> ? E : never`
-  - 将联合类型转交叉类型，利用函数参数的逆变的原理（U类型肯定是a和b函数的x属性的共同 子类型），`T extends { a: (x: infer U) => void; b: (x: infer U) => void } ? U : never;`
+  - 将 tuple 转 union，`T extends Array<infer E> ? E : never`
+  - 将联合类型转交叉类型，利用函数参数的逆变的原理（U 类型肯定是 a 和 b 函数的 x 属性的共同 子类型），`T extends { a: (x: infer U) => void; b: (x: infer U) => void } ? U : never;`
   
-- **内置工具类型** - TS中内置的一些工具类型
+- **内置工具类型** - TS 中内置的一些工具类型
 
   - `Partial` - 将传入的属性**由必选变为可选**。`type Partial<T> = {[P in keyof T] +? :  T[P]}`
 
@@ -483,27 +483,27 @@ let c2: Cart<string> = { list: ["0"] };
         age: number;
         married: boolean
     }
-    // 从Person中摘取'age'和'name'属性，并且返回一个的类型
+    // 从 Person 中摘取'age'和'name'属性，并且返回一个的类型
     type PickNameAndAgeType = Pick<Person, 'age' | 'name'>;
     ```
 
   - `Record` - 将一个类型的所有属性值都映射到另一个类型上并创造一个新的类型。`type Record<K extends keyof any, T> = {[P in K]: T}` ，如`Record<K, T> => Record<K, U>`
 
     ```typescript
-    keyof any; // 等于联合类型string | number | symbol
+    keyof any; // 等于联合类型 string | number | symbol
     ```
 
 - **自定义高级类型**
 
   - `Proxy` - 代理传入的属性。`type Proxify<T> = {[P in keyof T]: Proxy<T[P]>}; type Proxy<T> = {get(): T, set(value: T): void}`
 
-  - `SetDifference` - 找出T中不包含U的部分，**排除属性**，类似Exclude。`type SetDifference<T, U> = T extends U ? never : T;`
+  - `SetDifference` - 找出 T 中不包含 U 的部分，**排除属性**，类似 Exclude。`type SetDifference<T, U> = T extends U ? never : T;`
 
     ```typescript
     type Type = SetDifference<string | number | boolean, string| number>; // boolean
     ```
 
-  - `Omit` - 找出T中的排除某些属性的**剩余属性返回一个新的类型**。`type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>`
+  - `Omit` - 找出 T 中的排除某些属性的**剩余属性返回一个新的类型**。`type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>`
 
     ```typescript
     interface Person{
@@ -514,7 +514,7 @@ let c2: Cart<string> = { list: ["0"] };
     type NoAgeAndNameType = Omit<Person, 'name' | 'age'>
     ```
 
-  - `Diff` - 找出T中不包含U的**差异属性并返回一个新的类型**。`type Diff<T extends object, U extends object> = Pick<T, SetDifference<keyof T, keyof U>>`
+  - `Diff` - 找出 T 中不包含 U 的**差异属性并返回一个新的类型**。`type Diff<T extends object, U extends object> = Pick<T, SetDifference<keyof T, keyof U>>`
 
     ```typescript
     type Props = {name: string; age: number; visible: boolean};
@@ -522,7 +522,7 @@ let c2: Cart<string> = { list: ["0"] };
     type DiffProps = Diff<Props, DefaultProps>; // {name: string; visible: boolean}
     ```
 
-  - `Intersection` - 找出T中包含U的**共同属性并返回一个新的类型**。`type Intersection<T extends object, U extends object> = Pick<T, Extract<keyof T, keyof U> & Extract<keyof U, keyof T>>`
+  - `Intersection` - 找出 T 中包含 U 的**共同属性并返回一个新的类型**。`type Intersection<T extends object, U extends object> = Pick<T, Extract<keyof T, keyof U> & Extract<keyof U, keyof T>>`
 
     ```typescript
     type Props = {name: string; age: number; visible: boolean};
@@ -530,7 +530,7 @@ let c2: Cart<string> = { list: ["0"] };
     type IntersectionProps = Intersection<Props, DefaultProps>; // {age: number}
     ```
 
-  - `Override` - 使用U的属性**覆盖T的相同属性并返回一个新的类型**。`type Override<T extends object, U extends object, I = Diff<T, U> & Intersection<U, T>> = Pick<I, keyof I>`
+  - `Override` - 使用 U 的属性**覆盖 T 的相同属性并返回一个新的类型**。`type Override<T extends object, U extends object, I = Diff<T, U> & Intersection<U, T>> = Pick<I, keyof I>`
 
     ```typescript
     type Props = {name: string; age: number; visible: boolean};
@@ -559,26 +559,26 @@ let c2: Cart<string> = { list: ["0"] };
 ## 模块与命名空间
 
 - **模块**
-  - **全局模块** - 当你开始一个新的TS文件就处于全局命名空间中，这里面定义的变量都属于全局变量
-  - **文件模块** - 也称外部模块，当TS文件中含有`import`或者`export`时，TS会在这个文件中创建一个本地的作用域
+  - **全局模块** - 当你开始一个新的 TS 文件就处于全局命名空间中，这里面定义的变量都属于全局变量
+  - **文件模块** - 也称外部模块，当 TS 文件中含有`import`或者`export`时，TS 会在这个文件中创建一个本地的作用域
   - **模块规范** - `AMD` `SystemJS` `ES Module` `commonjs`
-  - 通过关键字`Module`声明一个模块，原理就是一个自执行函数，内部可以通过export向外导出属性
+  - 通过关键字`Module`声明一个模块，原理就是一个自执行函数，内部可以通过 export 向外导出属性
 - **命名空间**
   - 命名空间是内部模块，原理就是一个对象和一个块作用域
-  - 命名空间内部可以通过`export`向外导出属性，通过命名空间名称.变量名来调用
+  - 命名空间内部可以通过`export`向外导出属性，通过命名空间名称。变量名来调用
   - **相同名称的命名空间的属性会自动合并**
-- 不同文件下的同名Module模块，不会冲突
-- 不同文件下的同名namespace命名空间，会冲突
+- 不同文件下的同名 Module 模块，不会冲突
+- 不同文件下的同名 namespace 命名空间，会冲突
 
 ## 类型声明
 
-- 类型声明文件可以让JS代码直接兼容到TS的系统
+- 类型声明文件可以让 JS 代码直接兼容到 TS 的系统
 
 - 类型声明在编译的时候会被删除
 
 - 关键字`declare`用来添加各种声明
 
-- 可以使用`declare`+`namespace`来声明包含很多子属性的全局变量，例如扩展Jquery的属性
+- 可以使用`declare`+`namespace`来声明包含很多子属性的全局变量，例如扩展 Jquery 的属性
 
 - **类型声明文件**
 
@@ -589,8 +589,8 @@ let c2: Cart<string> = { list: ["0"] };
     ```json
     {
         "include":[
-            "src/**/*", // src目录下的所有文件夹下的所有文件
-            "typings/**/*" // typings目录下的所有文件夹下的所有文件
+            "src/**/*", // src 目录下的所有文件夹下的所有文件
+            "typings/**/*" // typings 目录下的所有文件夹下的所有文件
         ]
     }
     ```
@@ -599,14 +599,14 @@ let c2: Cart<string> = { list: ["0"] };
 
   - `@types/第三方声明的类型库`
 
-  - JS很多内置对象，已经被TS声明好了类型，如`lib.dom.d.ts`等等
+  - JS 很多内置对象，已经被 TS 声明好了类型，如`lib.dom.d.ts`等等
 
-  - 引入第三方模块，TS会自动查找`node_modules/@types/库名/index.d.ts`，或者自己编写声明文件并配置`tsconfig.json`，告诉TS去哪里查找声明文件
+  - 引入第三方模块，TS 会自动查找`node_modules/@types/库名/index.d.ts`，或者自己编写声明文件并配置`tsconfig.json`，告诉 TS 去哪里查找声明文件
 
     ```json
     {
         "compilerOptions": {
-            "baseUrl": "./", // 使用paths属性的话必须指定baseUrl的值
+            "baseUrl": "./", // 使用 paths 属性的话必须指定 baseUrl 的值
             "paths": {
                 "*": ["types/*"]
             }
@@ -614,7 +614,7 @@ let c2: Cart<string> = { list: ["0"] };
     }
     ```
 
-  - **npm声明文件可能的位置**
+  - **npm 声明文件可能的位置**
 
     - `node_modules/库名/package.json` - `{ "types":"types/xxx.d.ts" }`
     - `node_modules/库名/index.d.ts`
@@ -623,7 +623,7 @@ let c2: Cart<string> = { list: ["0"] };
 
 - **扩展全局变量的类型**
 
-  - 文件模块没有`export {}`，如使用`interface Stirng`可以扩展全局变量String的类型
+  - 文件模块没有`export {}`，如使用`interface Stirng`可以扩展全局变量 String 的类型
   - 如果文件模块内部有`export {}`，也可以使用`declare global{...}`来扩展全局变量的类型
 
 - **合并声明**
@@ -639,9 +639,9 @@ let c2: Cart<string> = { list: ["0"] };
       username = '';
       password = '';
     }
-    //Item为Form的内部类
+    //Item 为 Form 的内部类
     namespace Form {
-      export class Item {} // 一定要使用export
+      export class Item {} // 一定要使用 export
     }
     ```
 
@@ -663,7 +663,7 @@ let c2: Cart<string> = { list: ["0"] };
   ```json
   {
     "compilerOptions": {
-       "declaration": true, /* 自动生成ts对应的声明文件 '.d.ts' file.*/
+       "declaration": true, /* 自动生成 ts 对应的声明文件 '.d.ts' file.*/
     }
   }
   ```
