@@ -33,7 +33,7 @@
 
 ## 链表的翻转
 
-- 递归&【先进入下一个节点(currentNode.next)直至**当前节点为空或下一节点为空**返回最后一个节点作为新的头节点(newHead)，然后开始当前结点和下一个节点的两两交换，此时当前结点(currentNode)是倒数第二个节点】
+- 递归&【先进入下一个节点 (currentNode.next) 直至**当前节点为空或下一节点为空**返回最后一个节点作为新的头节点 (newHead)，然后开始当前结点和下一个节点的两两交换，此时当前结点 (currentNode) 是倒数第二个节点】
 
 ```js
 reverseLinkList1() {
@@ -41,9 +41,9 @@ reverseLinkList1() {
         // 直至最后一个节点，然后返回这个节点作为新的头结点
         if (currentNode === null || currentNode.next === null) return head;
         let newHead = reverse(currentNode.next); // 新的头结点
-        currentNode.next.next = currentNode; // 1 翻转指向，currentNode.next.next指向currentNode
-        currentNode.next = null; // 2 currentNode.next指向空值，currentNode.next原来的指向就断了
-        return newHead; // 每次遇到return都会返回上一个调用栈，这样就可以达到倒着进行两两交换的效果（重复1和2）
+        currentNode.next.next = currentNode; // 1 翻转指向，currentNode.next.next 指向 currentNode
+        currentNode.next = null; // 2 currentNode.next 指向空值，currentNode.next 原来的指向就断了
+        return newHead; // 每次遇到 return 都会返回上一个调用栈，这样就可以达到倒着进行两两交换的效果（重复 1 和 2）
     }
     this.head = reverse(this.head);
     return this.head;
@@ -51,7 +51,7 @@ reverseLinkList1() {
 }
 ```
 
-- 非递归&【使用一个当前节点(currentNode)以及一个新的头结点(newHead)。先翻转当前节点(currentNode)和下一个节点(currentNode.next)，新的头节点指向当前节点，当前节点指向下一个节点继续移动，翻转后的链表和老的链表会由新的头节点和当前节点分别作为头指针，新链表越来越长老链表越来越短】
+- 非递归&【使用一个当前节点 (currentNode) 以及一个新的头结点 (newHead)。先翻转当前节点 (currentNode) 和下一个节点 (currentNode.next)，新的头节点指向当前节点，当前节点指向下一个节点继续移动，翻转后的链表和老的链表会由新的头节点和当前节点分别作为头指针，新链表越来越长老链表越来越短】
 
 ```js
 reverseLinkList2() {
@@ -60,9 +60,9 @@ reverseLinkList2() {
     let newHead = null;
     while (currentNode != null) {
         let temp = currentNode.next; // 先保存下一个节点
-        currentNode.next = newHead; // 翻转指向，currentNode.next指向newHead
-        newHead = currentNode; // newHead移动到当前节点的位置
-        currentNode = temp // currentNode移动到下一个节点的位置
+        currentNode.next = newHead; // 翻转指向，currentNode.next 指向 newHead
+        newHead = currentNode; // newHead 移动到当前节点的位置
+        currentNode = temp // currentNode 移动到下一个节点的位置
     }
     this.head = newHead;
     return this.head;
@@ -87,7 +87,7 @@ reverseLinkList2() {
 
 ## 选择排序
 
-> `两个for`循环，内循环每次都在`找剩余列表的最小元素`，外循环在移动当前指针，当前指针左侧属于已排有序的列表，右侧（包括当前指针）属于未排无序列表。内循环结束后将最小元素与外循环的当前指针互换位置，然后继续下一轮
+> `两个 for`循环，内循环每次都在`找剩余列表的最小元素`，外循环在移动当前指针，当前指针左侧属于已排有序的列表，右侧（包括当前指针）属于未排无序列表。内循环结束后将最小元素与外循环的当前指针互换位置，然后继续下一轮
 
 算法实现：
 
@@ -97,7 +97,7 @@ function selection(arr) {
     for (let i = 0; i < N; i++) {
         let min = i;
         for (let j = i + 1; j < N; j++) {
-            if (arr[j] < arr[min]) min = j; // 注意：if判断条件必须写在for循环内部，不满足条件时，循环仍会往下走
+            if (arr[j] < arr[min]) min = j; // 注意：if 判断条件必须写在 for 循环内部，不满足条件时，循环仍会往下走
         }
         let temp = arr[i];
         arr[i] = arr[min];
@@ -108,9 +108,9 @@ function selection(arr) {
 
 ## 插入排序
 
-> `两个for`循环，内循环在遍历已排有序列表，`将当前指针插入到有序列表中`，外循环在移动当前指针，当前指针左侧属于已排有序的列表，右侧（包括当前指针）属于未排无序列表。
+> `两个 for`循环，内循环在遍历已排有序列表，`将当前指针插入到有序列表中`，外循环在移动当前指针，当前指针左侧属于已排有序的列表，右侧（包括当前指针）属于未排无序列表。
 >
-> 注意：内循环需要在完成插入时，终止for循环，否则性能就出其不意地比选择排序还差
+> 注意：内循环需要在完成插入时，终止 for 循环，否则性能就出其不意地比选择排序还差
 
 算法实现：
 
@@ -129,9 +129,9 @@ function insertion(arr) {
 
 ## 希尔排序
 
-> `三个for`循环，分别为内中外，中内两个循环在做插入排序（待排数组则通过外循环来控制），外循环是将h按照递增序列递减，h表示以h为间隔创建若干个子数组，每次中内循环都将这些子数组通过插入排序让他们变成有序数组
+> `三个 for`循环，分别为内中外，中内两个循环在做插入排序（待排数组则通过外循环来控制），外循环是将 h 按照递增序列递减，h 表示以 h 为间隔创建若干个子数组，每次中内循环都将这些子数组通过插入排序让他们变成有序数组
 >
-> 实则每次都在交换不相邻的元素，对数组的局部进行插入排序。对比单纯使用插入排序，每次交换都只能是相邻的元素（如果需要插入的位置刚好在另一头，则需要挪动N - 1次）
+> 实则每次都在交换不相邻的元素，对数组的局部进行插入排序。对比单纯使用插入排序，每次交换都只能是相邻的元素（如果需要插入的位置刚好在另一头，则需要挪动 N - 1 次）
 >
 > 希尔排序不稳定表现在：性能大大高于选择排序和插入排序，因为是基于插入排序的，而插入排序的内循环可以中断，所以对有序列表会更快
 
@@ -160,9 +160,9 @@ function shell(arr) {
 >
 > 如果是自顶向下的方式，采取尾递归方式
 >
-> 实际上，归并排序和希尔排序相比，运行时间之间的差距在常熟级别之内，希尔排序比归并排序快一些（经测试，10000个随机数，归并排序维持在6ms左右，希尔排序比它慢2-3s）
+> 实际上，归并排序和希尔排序相比，运行时间之间的差距在常熟级别之内，希尔排序比归并排序快一些（经测试，10000 个随机数，归并排序维持在 6ms 左右，希尔排序比它慢 2-3s）
 >
-> 为啥aux不是merge的局部变量？如果每次归并都创建一个新数组，这样会成为归并排序的运行时间的主要部分（经测试，10000个随机数，这种方式的运行时间是原来的5-6倍）
+> 为啥 aux 不是 merge 的局部变量？如果每次归并都创建一个新数组，这样会成为归并排序的运行时间的主要部分（经测试，10000 个随机数，这种方式的运行时间是原来的 5-6 倍）
 
 自顶向下的算法实现：
 
@@ -212,13 +212,13 @@ function partition(arr, low, high) {
     let i = low, j = high + 1; // 左右扫描指针
     let v = arr[low]; // 切分元素
     while (true) {
-        // 从low+1...high左扫描
+        // 从 low+1...high 左扫描
         while (arr[++i] < v) if (i === high) break; // 左指针扫描，如果左边都比切分元素小，而且扫描到了尽头，就结束；如果左边有大于切分元素的元素，退出while循环
         while (v < arr[--j]) if (j === low) break; // 右指针扫描，如果右边都比切分元素大，而且扫描到了尽头，就结束；如果右边右小于切分元素的元素，退出while循环
         if (i >= j) break; // 左指针大于等于右指针，终止
         exch(arr, i, j); // 交换，将小值放到左边，大值放到右边
     }
-    exch(arr, low, j); // 将v = arr[j]放入正确的位置
+    exch(arr, low, j); // 将 v = arr[j] 放入正确的位置
     return j; // 最后的结果是 arr[low...j - 1] <= arr[j] <= arr[j + 1...high]
 }
 function quickSort(arr, low, high) {
@@ -258,11 +258,11 @@ x = 1; y = 2; line B(fn2) ==> a = 2; b = 3; line A(fn1); x = 1; y = 2; line B(fn
 
 x = 1; y = 2; line B(fn2) ==> a = 2; b = 3; line B(fn1)
 
-> 区别就在于对`尾调用`做了优化时，调用栈的大小明显减小了很多，fn1返回值只需要返回给`line B`即可
+> 区别就在于对`尾调用`做了优化时，调用栈的大小明显减小了很多，fn1 返回值只需要返回给`line B`即可
 
 达到尾调用的条件：
 
-- 必须是在return后面调用函数。直接调用而没有return的时候不是一个尾递归
-- 除了函数调用，不能有其他副作用：条件判断||或&&、运算操作+ - * /等
+- 必须是在 return 后面调用函数。直接调用而没有 return 的时候不是一个尾递归
+- 除了函数调用，不能有其他副作用：条件判断||或&&、运算操作 + - * /等
 
 > 使用迭代的形式代替`递归`，如果是尾递归，直接协议循环，只要返回值是函数，就一直调用即可；但如果不是尾递归就麻烦点，就是拿个栈来模拟递归的过程
