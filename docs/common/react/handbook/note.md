@@ -4,7 +4,7 @@ JSX 是一种支持在 js 文件中写 html 标签语法的 JavaScript 语法扩
 
 实际用法：
 
-```jsx
+```jsx | pure
 <MyButton color="blue" shadowSize={2}>
   Click Me
 </MyButton>
@@ -20,7 +20,7 @@ React.createElement(
 
 由于 JSX 语法会被编译成`React.createElement`的调用形式，所以一定要在使用 JSX 语法的模块中引入`react`：
 
-```jsx
+```jsx | pure
 // 这是必须的
 import * as React from 'react';
 
@@ -35,7 +35,7 @@ function MyButton(props){
 
 当一个模块导出了多个 React 组件时，JSX 允许使用点语法渲染其中一个组件：
 
-```jsx
+```jsx | pure
 import * as React from 'react';
 
 const Mycomponents = {
@@ -57,7 +57,7 @@ function Picker(props){
 
 当你需要根据表达式来（动态）决定渲染元素类型时，必须使用中间变量来存储组件的组件名，而不是直接使用表达式：
 
-```jsx
+```jsx | pure
 import * as React from 'react';
 
 const MyComponents = {
@@ -78,13 +78,13 @@ function Component(props){
 
 使用`{}`来包裹一个 JavaScript 表达式，作为 props 传递给 JSX 元素：
 
-```jsx
+```jsx | pure
 <Compoennt number={1+2+3+4}/>
 ```
 
 以下 JSX 的写法是等价的：
 
-```jsx
+```jsx | pure
 // 1.表达式
 <Compoennt msg={'hello world'}/>
 // 2.字面量
@@ -95,7 +95,7 @@ function Component(props){
 
 以下 JSX 的写法是等价的：
 
-```jsx
+```jsx | pure
 <Compoennt autocomplete />
 
 <Compoennt autocomplete={true} />
@@ -109,7 +109,7 @@ function Component(props){
 
 可以通过`porops.children`获取到子元素：
 
-```jsx
+```jsx | pure
 function Component(props){
     // 可以添加自定义逻辑。。。
     // 可以粗暴地类比为 ng、vue 的插槽，但不完全一致
@@ -128,7 +128,7 @@ function App(){
 
 因此你可以在表达式中使用`&&`来选择是否渲染：
 
-```jsx
+```jsx | pure
 function Component(props){
     return 
     (<div>
@@ -225,7 +225,7 @@ React 中使用了”虚拟 DOM“的手段来代替直接操作”真实 DOM“
 
 尽管上述的手段可以避免直接操作”真实 DOM“，但无法避免重复渲染带来的时间消耗。所以，请使用`shouldComponentUpdate`来进行提速：
 
-```jsx
+```jsx | pure
 shouldComponentUpdate(nextProps, nextState) {
   return true;
 }
@@ -239,7 +239,7 @@ shouldComponentUpdate(nextProps, nextState) {
 
 当你只是修改或新增了引用地址下的某个属性，而再把这个旧的引用地址赋值给新的状态时，浅比较只比较引用地址，实际上引用地址的属性变了，但是比较结果是相同的，导致组件无法被更新
 
-```jsx
+```jsx | pure
 // 点击按钮，ListOfWords 并不会被更新
 class ListOfWords extends React.PureComponent {
     render() {
@@ -281,7 +281,7 @@ class WordAdder extends React.Component {
 
 所以，可以这样改写上述代码的例子：
 
-```jsx
+```jsx | pure
 // 1.使用 concat 返回一个新数组
 handleClick() {
     this.setState(state => ({
@@ -324,7 +324,7 @@ handleClick() {
 
 在`#app-root`里的`Portal`组件能够捕获到未被捕获的从兄弟节点`#modal-root`冒泡上来的事件
 
-```jsx
+```jsx | pure
 const appRoot = document.getElementById('app-root');
 const modalRoot = document.getElementById('modal-root');
 
@@ -389,7 +389,7 @@ ReactDOM.render(<Parent />, appRoot);
 
 一个是测量组件的`id`，一个是`onRender`（当组件更新时会被 React 调用其回调函数）
 
-```jsx
+```jsx | pure
 render(
   <App>
     <Profiler id="Navigation" onRender={callback}>      
@@ -404,7 +404,7 @@ render(
 
 ### onRender 回调
 
-```jsx
+```jsx | pure
 function onRenderCallback(
 	id, // 发生提交的 Profiler 树的“id”
      phase, // "mount" （如果组件树刚加载）或者 "update" （如果它重渲染了）之一
@@ -437,7 +437,7 @@ function onRenderCallback(
 
 通过 ref 传递给`render`中的元素，对此元素的引用可以在 ref 的`current`属性中被访问到：
 
-```jsx
+```jsx | pure
 class CustomTextInput extends React.Component{
     constructor(props){
         super(props);
@@ -469,7 +469,7 @@ class CustomTextInput extends React.Component{
 
 然而，可以通过 ref 转发使函数组件也能使用`ref`：
 
-```jsx
+```jsx | pure
 const FunctionComponent = React.forwardRef((props, ref)=>{
     return <input ref={ref}/>
 })
@@ -481,7 +481,7 @@ const FunctionComponent = React.forwardRef((props, ref)=>{
 
 使用`ref`回调函数，在实例的属性中存储对 DOM 节点的引用：
 
-```jsx
+```jsx | pure
 class CustomTextInput extends React.Component{
     constructor(props){
         super(props);
@@ -524,7 +524,7 @@ class CustomTextInput extends React.Component{
 
 通常，你可以使用 render props 来实现大多数高阶组件（HOC）：
 
-```jsx
+```jsx | pure
 function WithMouse(Component){
     return class extends React.Component{
         render(){
@@ -552,7 +552,7 @@ class Mouse extends React.Component{
 
 其实，为了如果只是为了达到上述目的，直接使用`children` prop 也可以：
 
-```jsx
+```jsx | pure
 <Mouse>
   {mouse => (
     <p>鼠标的位置是 {mouse.x}，{mouse.y}</p>
@@ -564,7 +564,7 @@ class Mouse extends React.Component{
 
 由于 render 每次都会生成一个新的值，而 React.PureComponent 根据浅比较 props 总会得到 false：
 
-```jsx
+```jsx | pure
 class Mouse extends React.PureComponent {
   // 与上面相同的代码......
 }
@@ -590,7 +590,7 @@ class MouseTracker extends React.Component {
 
 为了改善这个问题，你可以把 render prop 定义成一个实例方法：
 
-```jsx
+```jsx | pure
 class MouseTracker extends React.Component {
   // 定义为实例方法，`this.renderTheCat`始终
   // 当我们在渲染中使用它时，它指的是相同的函数

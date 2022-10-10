@@ -33,7 +33,7 @@
 
 > 前端代码：JSX 代码
 
-```jsx
+```jsx | pure
 <h1 id="title"><span>hello</span>world</h1>
 ```
 > 后端代码：JS 代码

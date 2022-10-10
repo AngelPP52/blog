@@ -1,0 +1,1 @@
+// 请看仓库下的 packages/68_InheritTypes.tsx

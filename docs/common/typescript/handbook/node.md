@@ -1,3 +1,10 @@
+---
+title: 笔记 - 基础
+group:
+  title: TypeScript
+  path: /typescript
+---
+
 ## 基本数据类型
 
 - `boolean` - 布尔类型
@@ -25,6 +32,7 @@ var Gender;
 
 - `any` - 任意类型
 - `never` - 可以用于表示不会返回的函数的返回值，这样的函数都无法正常执行
+  - `never` 可以赋值给任何类型
 
 ```js
 function func1{
@@ -39,7 +47,8 @@ function func2{
 }
 ```
 
-- `void` - 可以用来表示函数没有返回值，可以被赋值`null`或`undefined`
+- `void` - 可以用来表示函数没有返回值
+  - `void` 可以被赋值`null`或`undefined`
 - `bigint` - 大整数类型（2^53 - 1）
 - `string|number` - 联合类型，表示这个对象可以是 string 或 number，再未正确赋值前，这个对象可以调 string 和 number 的共同的 api，如赋值 number 后，除了共同 api，还可以调 number 的全部 api
 - **类型断言** - as 操作符，可以使用两个 as 表示双重断言，`xx as any as boolean`
@@ -332,7 +341,7 @@ sum<number|string|boolean>(null,null);// ×，类型不兼容
   - 能使用接口就不要使用泛型类型别名
   - 当需要使用`联合类型或元祖类型`的时候，泛型类型别名更加合适
 
-```js
+```ts
 type Cart<T> = { list: T[] } | T[];
 let c1: Cart<number> = [0, 1, 2];
 let c2: Cart<string> = { list: ["0"] };
@@ -410,6 +419,9 @@ let c2: Cart<string> = { list: ["0"] };
   
 - `unknown` - 是 any 的安全类型，**可以对 unknown 类型的对象进行任意赋值**，但与 any 不同的是，unknown 类型的对象不能调用未知的方法或属性（除非你已经赋过值并且可以明确知道具体的类型）
 
+  - 其他类型可以赋值给 `unknown`，但是 `unknown` 只能赋值给 `any` 或者 `unknown`
+  - any 可以赋值给 string，但是 unknown 不能
+
 - **联合类型的 unknown** - 最后都是 unknown
 
 - **交叉类型的 unknown** - 最后都是另外一个类型
@@ -448,22 +460,137 @@ let c2: Cart<string> = { list: ["0"] };
 
 - **映射类型** - 例如将一个接口中的属性都变成可选的，`type Part<T> = {[key in keyof T]?: T[key]}`
 
-- **条件类型** - `type Condition<T, R> = T extends R ? T : R` 
-  - 条件类型的分发，**T 如果是 R 的孩子，就返回 T，如果不是就返回 R**
+- **条件类型**
+  - 条件类型 `T extends U ? X : Y `要么被解析为 `X` or `Y`，要么被延迟
+    
+    - 1️⃣ 如果，T 的最宽松实例不能分配给 U 的 最宽松实例，则返回类型 Y
+    - 2️⃣ 如果根据 `infer` 推断的类型。对于给定的类型变量，如果从协变位置推断出任何候选者，则推断的类型是这些候选者的并集。否则，如果从逆变位置推断出任何候选者，则推断的类型是这些候选者的交集 
+      - 协变 vs 逆变
+      ```ts
+      interface SuperType {
+          base: string;
+      }
+      interface SubType extends SuperType {
+          addition: string;
+      };
+
+      // subtype compatibility
+      let superType: SuperType = { base: 'base' };
+      let subType: SubType = { base: 'myBase', addition: 'myAddition' };
+      superType = subType;
+
+      // Covariant
+      type Covariant<T> = T[];
+      let coSuperType: Covariant<SuperType> = [];
+      let coSubType: Covariant<SubType> = [];
+      coSuperType = coSubType;
+
+      // Contravariant --strictFunctionTypes true
+      type Contravariant<T> = (p: T) => void;
+      let contraSuperType: Contravariant<SuperType> = function(p) {}
+      let contraSubType: Contravariant<SubType> = function(p) {}
+      contraSubType = contraSuperType;
+      ```
+      我们将基础类型叫做 T，复合类型叫做 Comp<T>：
+        - 协变 (Covariant)：协变表示 Comp<T>类型兼容和 T 的一致。
+        - 逆变 (Contravariant)：逆变表示 Comp<T>类型兼容和 T 相反。**函数类型是逆变的。**
+
+    - 3️⃣ 如果，T 的实例可以完全分配给 U，则返回类型 X。当一个类型肯定可以分配给另一种类型时，它就可以分配给这些类型的所有实例
+    - 4️⃣ 条件取决于一个或多个类型变量，条件类型被延迟
+
+  - 条件类型的分发，**T 如果是 R 的孩子，就返回 T，如果不是就返回 R** 
+  ```ts
+  type Condition<T, R> = T extends R ? T : R
+  ``` 
   - 分布式有条件类型，**待检查的类型必须是一个裸类型**，如 [T],R[]...都不合法
-  - 联合类型的条件类型分发，`T extends U ? never : T; // 找出 T 中不包含 U 的部分`，`T extends U ? T : nerver; // 找出 T 中包含 U 的部分`
-  - `Extract` - 找出 T 中包含 U 的**共同部分**，`T extends U ? T : nerver;`
-  - `Exclude` - 找出 T 中不包含 U 的**差异部分**，`T extends U ? never : T;`
+  - 联合类型的条件类型分发
+  ```ts
+    type Extract<T,U> = T extends U ? never : T; // 找出 T 中不包含 U 的部分
+    type Exclude<T,U> = T extends U ? T : nerver; // 找出 T 中包含 U 的部分
+  ```
   
 - **infer** - ts 自带根据 infer 的位置来推断具体的类型
   
   - 推断函数返回值类型
+
+    ```ts
+    type ReturnType<T extends (...args: any[]) => any> = T extends (...args: any[]) => infer R ? R : any;
+    ```
+
   - 推断函数参数类型
-  - 推断类构造函数返回值类型
+
+    ```ts
+    type Parameters<T> = T extends (...args: infer R) => any ? R : any;
+    ```
+
   - 推断类构造函数参数类型
-  - 推断类型属性的子类型，`T extends {name:infer A} ? A : never`
-  - 将 tuple 转 union，`T extends Array<infer E> ? E : never`
-  - 将联合类型转交叉类型，利用函数参数的逆变的原理（U 类型肯定是 a 和 b 函数的 x 属性的共同 子类型），`T extends { a: (x: infer U) => void; b: (x: infer U) => void } ? U : never;`
+
+    ```ts
+    type Constructor = new (...args: any[]) => any;
+    type ConstructorParameters<T extends Constructor> = T extends new (...args: infer P) => any ? P : never;
+    ```
+
+  - 推断类实例类型
+
+    ```ts
+      type InstanceType<T extends Constructor> = T extends new (...args: any[]) => infer R ? R : any;
+    ```
+
+  - 推断类型属性的子类型
+
+    ```ts
+      type ObjectValue<T> = T extends {name:infer A} ? A : never
+    ```
+
+  - 将 tuple 转 union
+
+    ```ts
+      type TupleToUnion<T> =  T extends Array<infer E> ? E : never;
+    ```
+
+  - 同一类型变量的多个候选者推断**联合类型**
+
+    ```ts
+    type Foo<T> = T extends { a: infer U; b: infer U } ? U : never;
+    type T10 = Foo<{ a: string; b: string }>; // string
+    type T11 = Foo<{ a: string; b: number }>; // string | number
+    ```
+
+  - 同一类型变量在逆变位置的多个候选会导致推断出**交叉类型**：
+
+    ```ts
+    type Bar<T> = T extends { a: (x: infer U) => void; b: (x: infer U) => void }
+  ? U
+  : never;
+    type T20 = Bar<{ a: (x: string) => void; b: (x: string) => void }>; // string
+    type T21 = Bar<{ a: (x: string) => void; b: (x: number) => void }>; // string & number
+    ```
+  
+  - 「Distributive conditional types」条件类型，拆分 extends 左边部分的联合类型。例如：在条件类型 T extends U ? X : Y 中，当 T 是 A | B 时，会拆分成 A extends U ? X : Y | B extends U ? X : Y
+
+    ```ts
+    type Diff<T, U> = T extends U ? never : T; // Remove types from T that are assignable to U
+    type Filter<T, U> = T extends U ? T : never; // Remove types from T that are not assignable to U
+    type T30 = Diff<"a" | "b" | "c" | "d", "a" | "c" | "f">; // "b" | "d"
+    type T31 = Filter<"a" | "b" | "c" | "d", "a" | "c" | "f">; // "a" | "c"
+
+    type FunctionPropertyNames<T> = {[K in keyof T]: T[K] extends Function ? K : never;}[keyof T];
+    type FunctionProperties<T> = Pick<T, FunctionPropertyNames<T>>;
+    type T40 = FunctionPropertyNames<Part>; // "updatePart"
+    ```
+
+  - 模版字符串类型，L 类型只表示字符串中的第一个字符
+
+    ```ts
+    type FirstChar<T> = T extends `${infer L}${infer R}` ? L : never;
+    type LastChar<T, TT = never> = T extends `` ? TT : T extends `${infer L}${infer R}` ? LastChar<R, L> : never
+    ```
+  
+  - 元祖类型，L 类型只表示元祖类型中的第一个类型
+
+    ```ts
+    type TupleToUnion<T, TT = never> = T extends [infer L, ...infer R] ? TupleToUnion<R, TT> | L | TT : TT
+    ```
   
 - **内置工具类型** - TS 中内置的一些工具类型
 

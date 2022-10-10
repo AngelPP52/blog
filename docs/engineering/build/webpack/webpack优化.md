@@ -415,7 +415,7 @@ module.exports = {
   - React.lazy 懒加载组件
   - Suspense 组件：组件未加载出来之前，可以通过配置 fallback 属性来指定 loading 组件
 
-```jsx
+```jsx | pure
 class App extends Component{
     constructor(){
 		super();

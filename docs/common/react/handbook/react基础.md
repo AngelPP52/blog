@@ -17,7 +17,7 @@
 
 - 通过 ReactDOM 将 React 元素渲染到浏览器中
 
-  ```jsxarguments
+  ```jsx | purearguments
   // 使用React.createElement
   ReactDOM.render(React.createElement('h1', 'hello'), document.getElementById('root'));
   // 使用JSX
@@ -83,7 +83,7 @@
 
 > 转换前
 
-```jsx
+```jsx | pure
 <h1 id="title">
   <span>hello</span>world
 </h1>

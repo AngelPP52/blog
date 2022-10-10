@@ -15,6 +15,7 @@ const config: IConfig = {
     includes: [
       'docs', // 本地目录下的 md 文件
     ],
+    previewLangs: []
   },
 
   base: `/${repo}/`,
